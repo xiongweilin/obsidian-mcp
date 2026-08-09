@@ -27,11 +27,17 @@ def _ensure_vault() -> None:
     runbook = vault / "RUNBOOK"
     runbook.mkdir()
     (vault / "个人平台总览.md").write_text(
-        "---\ndocument_type: moc\ndocument_status: active\nknowledge_scope: operational\n---\n# 总览\n\n## 网络\n\n进入 [[RUNBOOK/环境运维手册]]。\n",
+        "---\ndocument_type: moc\n"
+        "document_status: active\n"
+        "knowledge_scope: operational\n"
+        "---\n# 总览\n\n## 网络\n\n进入 [[RUNBOOK/环境运维手册]]。\n",
         encoding="utf-8",
     )
     (runbook / "环境运维手册.md").write_text(
-        "---\ndocument_type: runbook\ndocument_status: active\nknowledge_scope: operational\n---\n# 环境运维手册\n\n## 检查\n\n先看环境状态。\n",
+        "---\ndocument_type: runbook\n"
+        "document_status: active\n"
+        "knowledge_scope: operational\n"
+        "---\n# 环境运维手册\n\n## 检查\n\n先看环境状态。\n",
         encoding="utf-8",
     )
     os.environ["RATIO_MCP_VAULT_ROOT"] = str(vault)
@@ -44,6 +50,7 @@ async def smoke() -> None:
         command=sys.executable,
         args=["-m", "ratio_mcp.server"],
         cwd=str(project),
+        env={**os.environ},  # 显式继承环境，确保 RATIO_MCP_VAULT_ROOT 传给 server 子进程
     )
     async with (
         stdio_client(parameters) as (read_stream, write_stream),
