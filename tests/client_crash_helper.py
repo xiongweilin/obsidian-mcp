@@ -55,7 +55,9 @@ def main() -> None:
         print("READY", file=sys.stderr, flush=True)
     except (BrokenPipeError, OSError):
         pass
-    time.sleep(600)
+    # Bounded idle so a leaked helper self-terminates even if a test fails
+    # before it can kill us (belt-and-suspenders on top of the test cleanup).
+    time.sleep(120)
 
 
 if __name__ == "__main__":

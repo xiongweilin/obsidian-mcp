@@ -233,33 +233,48 @@ def test_client_crash_leaves_no_orphan_server_processes(repo_root: Path) -> None
         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
     )
     server_pid: int | None = None
-    deadline = time.monotonic() + 60
-    while time.monotonic() < deadline:
-        line = host.stderr.readline()
-        if not line:
-            break
-        if line.startswith("SERVER_PID="):
-            server_pid = int(line.strip().split("=", 1)[1])
-        if line.strip() == "READY":
-            break
-    assert server_pid is not None, "helper did not report the server PID"
-    assert process_alive(server_pid), "server should be up before the crash"
+    try:
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            line = host.stderr.readline()
+            if not line:
+                break
+            if line.startswith("SERVER_PID="):
+                server_pid = int(line.strip().split("=", 1)[1])
+            if line.strip() == "READY":
+                break
+        assert server_pid is not None, "helper did not report the server PID"
+        assert process_alive(server_pid), "server should be up before the crash"
 
-    # Abnormal client exit: terminate the host without any clean shutdown.
-    if sys.platform == "win32":
-        subprocess.run(
-            ["taskkill", "/F", "/PID", str(host.pid)],
-            capture_output=True,
-            text=True,
-            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        # Abnormal client exit: terminate the host without any clean shutdown.
+        if sys.platform == "win32":
+            subprocess.run(
+                ["taskkill", "/F", "/PID", str(host.pid)],
+                capture_output=True,
+                text=True,
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+            )
+        else:
+            host.kill()
+    finally:
+        # Never leak the helper host, even when an earlier assertion fails.
+        if host.poll() is None:
+            if sys.platform == "win32":
+                subprocess.run(
+                    ["taskkill", "/F", "/T", "/PID", str(host.pid)],
+                    capture_output=True,
+                    text=True,
+                    creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+                )
+            else:
+                host.kill()
+            host.wait(timeout=10)
+
+    if server_pid is not None:
+        assert _wait_until_gone({server_pid}), (
+            f"ratio MCP server chain {server_pid} survived client crash"
         )
-    else:
-        host.kill()
-
-    assert _wait_until_gone({server_pid}), (
-        f"ratio MCP server chain {server_pid} survived client crash"
-    )
-    assert _descendants({server_pid}) == {}
+        assert _descendants({server_pid}) == {}
 
 
 def test_subprocess_timeout_is_bounded(repo_root: Path) -> None:
