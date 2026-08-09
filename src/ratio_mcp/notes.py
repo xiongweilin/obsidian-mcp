@@ -161,7 +161,7 @@ class NoteRepository:
     def _load_relative(self, supplied_path: str) -> NoteDocument:
         if not supplied_path.strip():
             raise ValueError("A Markdown path is required.")
-        relative = Path(supplied_path.replace("/", "\\"))
+        relative = Path(supplied_path.replace("\\", "/"))
         if relative.is_absolute() or relative.suffix.casefold() != ".md":
             raise ValueError("Only relative Markdown paths inside the ratio vault are allowed.")
         if len(relative.as_posix()) > 260:
