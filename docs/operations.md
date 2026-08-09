@@ -77,4 +77,35 @@ codex mcp remove ratio
 | 中文显示为替换符 `�` | vault 文件非 UTF-8 编码；按设计容错读入（`errors="replace"`），不会崩溃，但请尽量用 UTF-8 保存笔记 |
 | `query_runtime_status` 返回 warnings | 脚本缺失、命令失败或云不可达；warnings 不含敏感值，也不回退到旧文档 |
 | `uv sync` 报 `ratio-mcp.exe` 被占用 | 存在残留 MCP server 进程；先终止命令行含 `D:\download\agent\ratio-mcp` 的 `uv`/`python`/`ratio-mcp.exe` 进程（Codex 会按需重新拉起），再 `uv sync` |
+| `uv run` 反复报 `ratio-mcp.exe` 被占用（有常驻会话时） | 只影响控制台脚本重建，不影响代码（editable 安装直指 `src/`）；本地验证改用 `uv run --no-sync ...`，待会话结束进程退出后再 `uv sync` |
 | 检索不到刚改的笔记 | 无索引缓存，每次请求扫当前文件；确认文件是 `.md`、不在排除目录（`.git`/`.obsidian` 等） |
+
+## 生命周期与契约测试
+
+仓库测试分为三类，CI（`.github/workflows/ci.yml`）分别执行：
+
+| 类别 | 内容 | 本地运行 |
+| --- | --- | --- |
+| 常规单元测试 | 检索/运行时解析/隐私遮蔽 | `uv run pytest -q -m "not windows_only"` |
+| 契约测试 | 真实子进程 + 标准库 JSON-RPC 客户端：tools/list、五工具成功路径、隐私拒绝、schema 快照漂移 | `uv run pytest -q -m contract` |
+| Windows 专属 | 进程树结构、pwsh 超时 | `uv run pytest -q -m windows_only` |
+
+`tools/list` schema 变更时 `test_schema_snapshot.py` 失败；确认是有意变更后：
+
+```powershell
+uv run python scripts\update_schema_snapshot.py
+```
+
+并提交更新后的 `tests/schema-snapshot.json`。
+
+## 环境变量覆盖（仅测试/CI 使用）
+
+`Settings.defaults()` 支持只读环境变量覆盖，供测试与 CI 指向夹具 vault；
+这些变量只承载路径或整数，不承载任何凭据：
+
+| 变量 | 覆盖项 |
+| --- | --- |
+| `RATIO_MCP_VAULT_ROOT` | vault 根目录 |
+| `RATIO_MCP_COMMAND_TIMEOUT_SECONDS` | 子进程超时秒数 |
+| `RATIO_MCP_WINDOWS_STATUS_SCRIPT` / `RATIO_MCP_CLOUD_STATUS_SCRIPT` | 状态脚本路径 |
+| `RATIO_MCP_SSH_WRAPPER` | 云端 SSH 包装脚本路径 |

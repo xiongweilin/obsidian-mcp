@@ -26,6 +26,11 @@ build-backend = "hatchling.build"
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
+markers = [
+    "contract: wire-level MCP contract tests using the stdlib JSON-RPC client",
+    "lifecycle: real-subprocess MCP lifecycle tests",
+    "windows_only: requires a Windows host (process tree / pwsh)",
+]
 
 [tool.ruff]
 line-length = 100

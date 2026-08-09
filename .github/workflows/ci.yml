@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Sync locked dependencies
+        run: uv sync --locked
+      - name: Ruff check
+        run: uv run ruff check .
+
+  contract:
+    name: MCP contract (stdlib JSON-RPC client)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Sync locked dependencies
+        run: uv sync --locked
+      - name: Contract + schema drift tests
+        run: uv run pytest -q -m contract
+
+  test:
+    name: Unit tests + cross-platform lifecycle
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Sync locked dependencies
+        run: uv sync --locked
+      - name: Pytest (non-Windows-only)
+        run: uv run pytest -q -m "not windows_only and not contract"
+      - name: Stdio smoke (SDK client)
+        run: uv run python scripts/smoke_stdio.py
+
+  windows:
+    name: Windows-specific lifecycle
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Sync locked dependencies
+        run: uv sync --locked
+      - name: Windows-only + contract pytest
+        run: uv run pytest -q -m "windows_only or contract"

@@ -343,7 +343,11 @@ def _score_chunk(chunk: NoteChunk, query: str) -> int:
 
 
 def _snippet(text: str, query: str, width: int = 360) -> str:
-    compact = re.sub(r"\s+", " ", text).strip()
+    # Redact before collapsing whitespace: the assignment regex is anchored to
+    # line starts, and a single-line compacted snippet would otherwise leak
+    # `password: value` forms that never begin the compacted string.
+    redacted_text, _ = redact_sensitive_text(text)
+    compact = re.sub(r"\s+", " ", redacted_text).strip()
     lower = compact.casefold()
     positions = [lower.find(term) for term in _query_terms(query)]
     positions = [position for position in positions if position >= 0]
@@ -355,8 +359,7 @@ def _snippet(text: str, query: str, width: int = 360) -> str:
         snippet = "…" + snippet
     if end < len(compact):
         snippet += "…"
-    redacted, _ = redact_sensitive_text(snippet)
-    return redacted
+    return snippet
 
 
 def _hit_from_chunk(chunk: NoteChunk, score: int, query: str) -> SearchHit:

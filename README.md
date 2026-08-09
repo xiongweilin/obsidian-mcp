@@ -21,6 +21,8 @@
 - [轻量索引 vs RAG](docs/rag-vs-index.md)：取舍结论（不实现 RAG）。
 - [安装/升级/卸载/故障排查](docs/operations.md)。
 - [公开脱敏骨架](docs/public-skeleton.md)：可分享的公开说明。
+- [Sonar MCP 只读候选配置](docs/sonar-mcp-candidate.md)：已停用，未启用。
+- [Codex MCP 配置脱敏快照](docs/mcp-config-snapshot-20260809.md)：2026-08-09 的 `mcp_servers` 结构快照。
 - 架构选择见 [ADR-0001](docs/decisions/0001-local-read-only-stdio.md) 与 [ADR-0002](docs/decisions/0002-additive-retrieval-and-board-interface.md)。
 
 ## 快速开始
@@ -43,6 +45,22 @@ uv run python scripts\smoke_runtime.py
 ```
 
 `smoke_runtime.py` 会访问真实 Windows、Docker 和个人云端，只输出每个范围的返回数量与警告数，不输出服务详情。
+
+测试套件还包含两类真实子进程测试（由 CI 和本地 `pytest` 自动运行）：
+
+- **契约测试**（`tests/test_contract_stdio.py`）：用标准库 JSON-RPC 客户端
+  直连真实 server 进程，验证 tools/list、五个工具的成功路径、隐私遮蔽与
+  拒绝路径、schema 快照漂移。
+- **生命周期测试**（`tests/test_lifecycle.py`）：并发连接进程结构、客户端
+  关闭/异常退出后的进程回收、子进程超时。
+
+`tools/list` schema 快照在 `tests/schema-snapshot.json`；schema 变更时
+`test_schema_snapshot.py` 会失败，需人工确认后运行
+`uv run python scripts/update_schema_snapshot.py` 重新生成并提交。
+
+> 本机存在常驻 MCP 会话时，`uv sync` 可能因 `ratio-mcp.exe` 被占用而失败
+> （见 `docs/operations.md`）；本地验证可用 `uv run --no-sync ...`，CI 在
+> 全新 runner 上不受影响。
 
 ## Codex 接入
 
