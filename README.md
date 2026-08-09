@@ -1,17 +1,27 @@
 # ratio-mcp
 
-`ratio-mcp` 是面向个人 `D:\download\ratio` 知识库和真实运行环境的只读 MCP 服务。它不建立向量库，不复制知识库，也不让 Agent 执行任意命令；Codex 通过四个窄接口定位文档、读取小节并查询当前 Windows、Docker 与云端状态。
+`ratio-mcp` 是面向个人 `D:\download\ratio` 知识库和真实运行环境的只读 MCP 服务。它不建立向量库，不复制知识库，也不让 Agent 执行任意命令；Codex 通过五个窄接口定位文档、读取小节、查看行动看板并查询当前 Windows、Docker 与云端状态。
 
 ## 工具契约
 
 | 工具 | 用途 | 事实类型 |
 | --- | --- | --- |
 | `find_runbook` | 从 `个人平台总览.md` 和 `RUNBOOK` 中定位单一运行手册 | 文档导航 |
-| `search_notes` | 按标题、路径、frontmatter、标题块和正文做确定性检索 | 文档证据 |
+| `search_notes` | 按标题、标签、链接、路径、frontmatter、标题块和正文做确定性检索 | 文档证据 |
 | `read_section` | 读取知识库内一个 Markdown 文件或指定标题小节 | 文档证据 |
+| `read_action_board` | 把 `当前行动看板.md` 解析为结构化列与勾选项 | 文档证据 |
 | `query_runtime_status` | 查询 Windows 服务、本机 Docker 或云端 systemd/Docker | 实时证据 |
 
-所有列表接口都有数量上限；路径被限制在知识库内；`read_section` 只接受 Markdown；搜索摘要和正文返回前会遮蔽常见凭据形式。返回的 Markdown 是证据数据而不是 Agent 指令。运行时工具只执行代码中固定的只读命令，不接受 shell 命令参数。
+所有列表接口都有数量上限；路径被限制在知识库内（排除 `.git`/`.obsidian` 等目录）；`read_section` 只接受 Markdown；非 UTF-8 文件以替换符容错读入；搜索摘要和正文返回前会遮蔽常见凭据形式。返回的 Markdown 是证据数据而不是 Agent 指令。运行时工具只执行代码中固定的只读命令，不接受 shell 命令参数。
+
+## 文档
+
+- [项目边界](docs/boundaries.md)：职责、只读边界、路径允许列表与禁止读取清单。
+- [工具契约](docs/contracts.md)：五个工具的输入输出、错误语义与长度限制。
+- [轻量索引 vs RAG](docs/rag-vs-index.md)：取舍结论（不实现 RAG）。
+- [安装/升级/卸载/故障排查](docs/operations.md)。
+- [公开脱敏骨架](docs/public-skeleton.md)：可分享的公开说明。
+- 架构选择见 [ADR-0001](docs/decisions/0001-local-read-only-stdio.md) 与 [ADR-0002](docs/decisions/0002-additive-retrieval-and-board-interface.md)。
 
 ## 快速开始
 

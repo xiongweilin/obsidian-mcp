@@ -47,6 +47,33 @@ class SectionResponse(BaseModel):
     source_kind: Literal["documentation"] = "documentation"
 
 
+class ActionBoardItem(BaseModel):
+    text: str = Field(description="Main line of the checkbox item.")
+    status: Literal["open", "done"] = Field(description="Checkbox state: open or done.")
+    details: list[str] = Field(
+        default_factory=list,
+        description="Indented sub-bullets under the item (e.g. 下一动作/完成条件/证据).",
+    )
+
+
+class ActionBoardColumn(BaseModel):
+    name: str = Field(description="Section heading of the board column.")
+    items: list[ActionBoardItem]
+
+
+class ActionBoardResponse(BaseModel):
+    path: str = Field(description="Path relative to the ratio vault.")
+    title: str
+    columns: list[ActionBoardColumn]
+    total_items: int = Field(ge=0)
+    open_items: int = Field(ge=0)
+    done_items: int = Field(ge=0)
+    updated: str | None = None
+    last_verified: str | None = None
+    redactions: int = Field(ge=0)
+    source_kind: Literal["documentation"] = "documentation"
+
+
 class RuntimeItem(BaseModel):
     kind: str
     name: str

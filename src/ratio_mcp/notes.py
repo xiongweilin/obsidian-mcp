@@ -5,14 +5,24 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
-from ratio_mcp.models import RunbookResponse, SearchHit, SearchResponse, SectionResponse
+from ratio_mcp.models import (
+    ActionBoardColumn,
+    ActionBoardItem,
+    ActionBoardResponse,
+    RunbookResponse,
+    SearchHit,
+    SearchResponse,
+    SectionResponse,
+)
 from ratio_mcp.privacy import redact_sensitive_text
 
 SearchScope = Literal["all", "runbook", "operational", "conceptual"]
+ACTION_BOARD_PATH = "当前行动看板.md"
 
 _EXCLUDED_PARTS = {".git", ".obsidian", ".venv", "node_modules", "__pycache__"}
 _HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 _WIKILINK = re.compile(r"\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]")
+_CHECKBOX = re.compile(r"^\s*[-*]\s+\[([ xX])\]\s+(.+?)\s*$")
 
 
 @dataclass(frozen=True, slots=True)
@@ -22,6 +32,7 @@ class NoteDocument:
     lines: list[str]
     title: str
     metadata: dict[str, str]
+    tags: tuple[str, ...]
 
 
 @dataclass(frozen=True, slots=True)
@@ -123,6 +134,12 @@ class NoteRepository:
             redactions=redactions,
         )
 
+    def read_action_board(self) -> ActionBoardResponse:
+        """Parse the current action board (当前行动看板.md) into structured columns."""
+
+        document = self._load_relative(ACTION_BOARD_PATH)
+        return _parse_action_board(document)
+
     def _documents(self, scope: SearchScope) -> list[NoteDocument]:
         if not self.root.is_dir():
             raise ValueError("The configured ratio vault root is unavailable.")
@@ -131,7 +148,12 @@ class NoteRepository:
             relative = path.relative_to(self.root)
             if any(part in _EXCLUDED_PARTS for part in relative.parts):
                 continue
-            document = _load_document(self.root, path)
+            try:
+                document = _load_document(self.root, path)
+            except OSError:
+                # Unreadable files (permissions, locked handles) are skipped so one
+                # broken note cannot take the whole retrieval surface down.
+                continue
             if _in_scope(document, scope):
                 documents.append(document)
         return documents
@@ -142,6 +164,8 @@ class NoteRepository:
         relative = Path(supplied_path.replace("/", "\\"))
         if relative.is_absolute() or relative.suffix.casefold() != ".md":
             raise ValueError("Only relative Markdown paths inside the ratio vault are allowed.")
+        if len(relative.as_posix()) > 260:
+            raise ValueError("The requested path exceeds the 260 character limit.")
         candidate = (self.root / relative).resolve()
         if not candidate.is_relative_to(self.root):
             raise ValueError("The requested path escapes the ratio vault.")
@@ -191,9 +215,14 @@ class NoteRepository:
 
 
 def _load_document(root: Path, path: Path) -> NoteDocument:
-    text = path.read_text(encoding="utf-8-sig")
+    text = path.read_text(encoding="utf-8-sig", errors="replace")
     lines = text.splitlines()
     metadata = _frontmatter(lines)
+    tags = tuple(
+        tag.strip().strip('"\'')
+        for tag in metadata.get("tags", "").split(",")
+        if tag.strip()
+    )
     title = metadata.get("title") or path.stem
     for line in lines:
         match = _HEADING.match(line)
@@ -206,6 +235,7 @@ def _load_document(root: Path, path: Path) -> NoteDocument:
         lines=lines,
         title=title,
         metadata=metadata,
+        tags=tags,
     )
 
 
@@ -213,13 +243,23 @@ def _frontmatter(lines: list[str]) -> dict[str, str]:
     if not lines or lines[0].strip() != "---":
         return {}
     metadata: dict[str, str] = {}
+    list_key: str | None = None
     for line in lines[1:]:
         if line.strip() == "---":
             break
-        if ":" not in line or line[:1].isspace():
+        if line[:1].isspace() and list_key:
+            item = line.strip().lstrip("-").strip().strip('"\'')
+            if item:
+                current = metadata.get(list_key, "")
+                metadata[list_key] = f"{current},{item}" if current else item
+            continue
+        list_key = None
+        if ":" not in line:
             continue
         key, value = line.split(":", 1)
         metadata[key.strip()] = value.strip().strip('"\'')
+        if not value.strip():
+            list_key = key.strip()
     return metadata
 
 
@@ -285,6 +325,8 @@ def _score_chunk(chunk: NoteChunk, query: str) -> int:
     path = chunk.document.relative_path.casefold()
     title = chunk.document.title.casefold()
     heading = (chunk.heading or "").casefold()
+    tags = " ".join(chunk.document.tags).casefold()
+    links = " ".join(_WIKILINK.findall(chunk.text)).casefold()
     metadata = " ".join(chunk.document.metadata.values()).casefold()
     body = chunk.text.casefold()
     score = 0
@@ -293,6 +335,8 @@ def _score_chunk(chunk: NoteChunk, query: str) -> int:
         score += 60 * multiplier if term in title else 0
         score += 50 * multiplier if term in heading else 0
         score += 35 * multiplier if term in path else 0
+        score += 25 * multiplier if term in tags else 0
+        score += 30 * multiplier if term in links else 0
         score += 20 * multiplier if term in metadata else 0
         score += min(body.count(term), 5) * 8 * multiplier
     return score
@@ -328,3 +372,77 @@ def _hit_from_chunk(chunk: NoteChunk, score: int, query: str) -> SearchHit:
         document_status=document.metadata.get("document_status"),
         knowledge_scope=document.metadata.get("knowledge_scope"),
     )
+
+
+def _parse_action_board(document: NoteDocument) -> ActionBoardResponse:
+    """Parse an Obsidian Kanban Markdown document into ordered columns and items."""
+
+    columns: list[ActionBoardColumn] = []
+    current_column: str | None = None
+    current_items: list[tuple[str, str, list[str]]] = []
+    pending_details: list[str] = []
+
+    def flush() -> None:
+        nonlocal current_column, current_items, pending_details
+        if current_column is None:
+            return
+        parsed: list[ActionBoardItem] = []
+        for raw_text, raw_status, details in current_items:
+            text, _ = redact_sensitive_text(raw_text)
+            clean_details: list[str] = []
+            for detail in details:
+                clean, _ = redact_sensitive_text(detail)
+                clean_details.append(clean)
+            parsed.append(
+                ActionBoardItem(
+                    text=text,
+                    status="done" if raw_status in {"x", "X"} else "open",
+                    details=clean_details,
+                )
+            )
+        columns.append(ActionBoardColumn(name=current_column, items=parsed))
+        current_items = []
+        pending_details = []
+
+    for line in document.lines:
+        heading = _HEADING.match(line)
+        if heading and len(heading.group(1)) >= 2:
+            # Obsidian Kanban columns are H2+; the H1 document title is not a column.
+            flush()
+            current_column = heading.group(2).strip()
+            continue
+        checkbox = _CHECKBOX.match(line)
+        if checkbox:
+            pending_details = []
+            current_items.append((checkbox.group(2), checkbox.group(1), pending_details))
+            continue
+        if current_items and line.strip() and line[:1].isspace():
+            pending_details.append(_strip_bullet_marker(line.strip()))
+            continue
+        if current_items and line.strip() and not line[:1].isspace():
+            # A non-indented text line directly after a checkbox belongs to the
+            # item (Obsidian Kanban keeps wrapped lines flush left).
+            pending_details.append(_strip_bullet_marker(line.strip()))
+    flush()
+
+    items = [item for column in columns for item in column.items]
+    _, redactions = redact_sensitive_text(
+        "\n".join(item.text + "\n" + "\n".join(item.details) for item in items)
+    )
+    return ActionBoardResponse(
+        path=document.relative_path,
+        title=document.title,
+        columns=columns,
+        total_items=len(items),
+        open_items=sum(1 for item in items if item.status == "open"),
+        done_items=sum(1 for item in items if item.status == "done"),
+        updated=document.metadata.get("updated"),
+        last_verified=document.metadata.get("last_verified"),
+        redactions=redactions,
+    )
+
+
+def _strip_bullet_marker(line: str) -> str:
+    if line.startswith(("- ", "* ")):
+        return line[2:].strip()
+    return line

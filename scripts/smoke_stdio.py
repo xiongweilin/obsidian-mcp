@@ -23,7 +23,13 @@ async def smoke() -> None:
         await session.send_ping()
         tools = await session.list_tools()
         names = {tool.name for tool in tools.tools}
-        expected = {"find_runbook", "search_notes", "read_section", "query_runtime_status"}
+        expected = {
+            "find_runbook",
+            "search_notes",
+            "read_section",
+            "read_action_board",
+            "query_runtime_status",
+        }
         if names != expected:
             raise RuntimeError(f"Unexpected MCP tool set: {sorted(names)}")
         result = await session.call_tool("search_notes", {"query": "环境运维", "limit": 1})

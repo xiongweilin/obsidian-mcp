@@ -50,3 +50,112 @@ token: should-not-leave-the-server
     )
     (tmp_path / "概念.md").write_text("# 不变量\n\n状态可以变化。\n", encoding="utf-8")
     return tmp_path
+
+
+@pytest.fixture
+def rich_vault(tmp_path: Path) -> Path:
+    """Deterministic vault exercising tags, aliases, links, a board, and malformed notes."""
+
+    runbook = tmp_path / "RUNBOOK"
+    runbook.mkdir()
+    model = tmp_path / "领域模型"
+    model.mkdir()
+
+    (tmp_path / "个人平台总览.md").write_text(
+        """---
+document_type: moc
+document_status: active
+knowledge_scope: operational
+tags:
+  - moc
+  - dev-environment
+---
+# 个人平台总览
+
+## 网络入口
+
+公网故障进入 [[RUNBOOK/网络手册]]，恢复流程见 [[RUNBOOK/缺失手册]]。
+
+## 循环入口
+
+进入 [[RUNBOOK/循环甲]]。
+""",
+        encoding="utf-8",
+    )
+    (runbook / "网络手册.md").write_text(
+        """---
+document_type: runbook
+document_status: active
+knowledge_scope: operational
+aliases:
+  - 代号甲
+  - 网络恢复
+tags:
+  - wifi
+  - 网络
+---
+# 网络手册
+
+## 检查
+
+先看 Tailscale 状态。
+
+password: do-not-leak-me
+""",
+        encoding="utf-8",
+    )
+    (runbook / "循环甲.md").write_text(
+        "---\ndocument_type: runbook\nknowledge_scope: operational\n---\n"
+        "# 循环甲\n\n进入 [[RUNBOOK/循环乙]]。\n"
+    )
+    (runbook / "循环乙.md").write_text(
+        "---\ndocument_type: runbook\nknowledge_scope: operational\n---\n"
+        "# 循环乙\n\n回到 [[RUNBOOK/循环甲]]。\n"
+    )
+    (model / "无标签词.md").write_text(
+        """---
+document_type: domain-model
+tags:
+  - unique-tag-xyz
+---
+# 无标签词
+
+正文不包含标签词。
+""",
+        encoding="utf-8",
+    )
+    (tmp_path / "当前行动看板.md").write_text(
+        """---
+document_type: kanban
+knowledge_scope: task-state
+updated: 2026-08-09
+last_verified: 2026-08-09
+tags:
+  - todo
+---
+# 当前行动看板
+
+## 当前主线
+
+- [ ] 完成正式会话 2
+      - 下一动作：先做预测。
+      - 完成条件：能解释重试预算。
+
+## 已完成
+
+- [x] 关闭门（2026-08-06）
+      - 证据：检查与测试全绿。
+
+## 收件箱
+
+- [ ] 新事项先放这里。
+""",
+        encoding="utf-8",
+    )
+    # Non-UTF-8 (GBK) file: must be tolerated, not crash the repository.
+    (tmp_path / "编码测试.md").write_bytes("标题\n内容包含中文。\n".encode("gbk"))
+    # Abnormal Markdown: no headings, malformed heading syntax, lone hashes.
+    (tmp_path / "异常笔记.md").write_text(
+        "只有正文，没有标题。\n#无空格标题\n###\n#### 尾随空格  \n---\n", encoding="utf-8"
+    )
+    return tmp_path
