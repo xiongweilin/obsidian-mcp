@@ -2,7 +2,7 @@
 
 ## 现状与实测基线
 
-真实 vault（`D:\download\ratio`）规模：
+真实 vault（`D:\agent\ratio`）规模：
 
 - 44 个 Markdown 文件（排除 `.git`/`.obsidian`），约 13 个文件使用 tags、9 个使用 aliases；
 - 结构高度规整：frontmatter（`document_type`、`knowledge_scope`、`tags`、`updated`）、H1–H6 标题块、`[[Wikilink]]`、`RUNBOOK/` 目录约定、看板文档。

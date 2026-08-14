@@ -25,7 +25,7 @@ class Settings:
         # Environment overrides exist so tests and CI can point the server at a
         # fixture vault without editing source. Values are paths or integers,
         # never secrets; absent variables keep the platform defaults.
-        vault_root = Path(os.environ.get("RATIO_MCP_VAULT_ROOT", r"D:\download\ratio"))
+        vault_root = Path(os.environ.get("RATIO_MCP_VAULT_ROOT", r"D:\agent\ratio"))
         timeout_raw = os.environ.get("RATIO_MCP_COMMAND_TIMEOUT_SECONDS")
         timeout = int(timeout_raw) if timeout_raw else 20
         return cls(

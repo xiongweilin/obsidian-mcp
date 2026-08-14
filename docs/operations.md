@@ -4,12 +4,12 @@
 
 - Windows + [uv](https://docs.astral.sh/uv/)（本项目只用 `uv sync` / `uv run`，不全局安装 Python 依赖）；
 - Python ≥3.12（`uv` 自动管理）；
-- 只读目标 vault `D:\download\ratio`（缺失时检索工具报错，见故障排查）。
+- 只读目标 vault `D:\agent\ratio`（缺失时检索工具报错，见故障排查）。
 
 ## 安装
 
 ```powershell
-cd D:\download\agent\ratio-mcp
+cd D:\agent\ratio-mcp
 uv sync
 ```
 
@@ -35,7 +35,7 @@ uv run python scripts\smoke_runtime.py
 Codex 使用全局 `~/.codex/config.toml` 的 STDIO 条目启动本项目。当前机器上 `[mcp_servers.ratio]` 已配置（含 `command` 与 `args` 键）。如需在另一台机器配置：
 
 ```powershell
-codex mcp add ratio -- %USERPROFILE%\scoop\shims\uv.exe run --directory D:\download\agent\ratio-mcp ratio-mcp
+codex mcp add ratio -- %USERPROFILE%\scoop\shims\uv.exe run --directory D:\agent\ratio-mcp ratio-mcp
 ```
 
 查看与回滚：
@@ -50,7 +50,7 @@ codex mcp remove ratio
 ## 升级
 
 ```powershell
-cd D:\download\agent\ratio-mcp
+cd D:\agent\ratio-mcp
 git pull
 uv sync
 uv run ruff check .
@@ -65,7 +65,7 @@ uv run pytest
 codex mcp remove ratio
 ```
 
-然后删除项目目录（`D:\download\agent\ratio-mcp`，含 `.venv`）。卸载不影响 vault 内容，本项目从不写 vault。
+然后删除项目目录（`D:\agent\ratio-mcp`，含 `.venv`）。卸载不影响 vault 内容，本项目从不写 vault。
 
 ## 常见故障排查
 
@@ -73,10 +73,10 @@ codex mcp remove ratio
 | --- | --- |
 | 启动后终端无输出、无提示符 | 正常：STDIO 服务在等 MCP Host；按 Ctrl+C 退出 |
 | Codex 报 MCP 启动超时 | 首次 `uv sync` 未完成或依赖未装；先手动 `uv sync` 再重试 |
-| `search_notes`/`read_section` 报 vault 不可用 | `D:\download\ratio` 不存在或不可访问；确认路径 |
+| `search_notes`/`read_section` 报 vault 不可用 | `D:\agent\ratio` 不存在或不可访问；确认路径 |
 | 中文显示为替换符 `�` | vault 文件非 UTF-8 编码；按设计容错读入（`errors="replace"`），不会崩溃，但请尽量用 UTF-8 保存笔记 |
 | `query_runtime_status` 返回 warnings | 脚本缺失、命令失败或云不可达；warnings 不含敏感值，也不回退到旧文档 |
-| `uv sync` 报 `ratio-mcp.exe` 被占用 | 存在残留 MCP server 进程；先终止命令行含 `D:\download\agent\ratio-mcp` 的 `uv`/`python`/`ratio-mcp.exe` 进程（Codex 会按需重新拉起），再 `uv sync` |
+| `uv sync` 报 `ratio-mcp.exe` 被占用 | 存在残留 MCP server 进程；先终止命令行含 `D:\agent\ratio-mcp` 的 `uv`/`python`/`ratio-mcp.exe` 进程（Codex 会按需重新拉起），再 `uv sync` |
 | `uv run` 反复报 `ratio-mcp.exe` 被占用（有常驻会话时） | 只影响控制台脚本重建，不影响代码（editable 安装直指 `src/`）；本地验证改用 `uv run --no-sync ...`，待会话结束进程退出后再 `uv sync` |
 | 检索不到刚改的笔记 | 无索引缓存，每次请求扫当前文件；确认文件是 `.md`、不在排除目录（`.git`/`.obsidian` 等） |
 

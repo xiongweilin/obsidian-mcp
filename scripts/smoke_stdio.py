@@ -15,7 +15,7 @@ from ratio_mcp.config import Settings
 def _ensure_vault() -> None:
     """Point the spawned server at a real vault, creating a fixture if needed.
 
-    Local runs use the configured vault root (D:\\download\\ratio); CI environments with
+    Local runs use the configured vault root (D:\\agent\\ratio); CI environments with
     no vault get a disposable fixture so the stdio smoke stays meaningful.
     """
 

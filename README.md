@@ -1,6 +1,6 @@
 # ratio-mcp
 
-`ratio-mcp` 是面向个人 `D:\download\ratio` 知识库和真实运行环境的只读 MCP 服务。它不建立向量库，不复制知识库，也不让 Agent 执行任意命令；Codex 通过五个窄接口定位文档、读取小节、查看行动看板并查询当前 Windows、Docker 与云端状态。
+`ratio-mcp` 是面向个人 `D:\agent\ratio` 知识库和真实运行环境的只读 MCP 服务。它不建立向量库，不复制知识库，也不让 Agent 执行任意命令；Codex 通过五个窄接口定位文档、读取小节、查看行动看板并查询当前 Windows、Docker 与云端状态。
 
 ## 工具契约
 
@@ -28,7 +28,7 @@
 ## 快速开始
 
 ```powershell
-cd D:\download\agent\ratio-mcp
+cd D:\agent\ratio-mcp
 uv sync
 uv run ratio-mcp
 ```
@@ -67,7 +67,7 @@ uv run python scripts\smoke_runtime.py
 Codex 使用全局 `~/.codex/config.toml` 中的 STDIO 条目启动本项目；CLI、IDE 扩展和桌面 App 在同一台主机上共享该配置。当前安装命令为：
 
 ```powershell
-codex mcp add ratio -- %USERPROFILE%\scoop\shims\uv.exe run --directory D:\download\agent\ratio-mcp ratio-mcp
+codex mcp add ratio -- %USERPROFILE%\scoop\shims\uv.exe run --directory D:\agent\ratio-mcp ratio-mcp
 ```
 
 查看与回滚：
@@ -81,7 +81,7 @@ codex mcp remove ratio
 
 ## 运行边界
 
-- 默认知识库：`D:\download\ratio`。
+- 默认知识库：`D:\agent\ratio`。
 - 默认云端入口：`%USERPROFILE%\.local\bin\Invoke-RatioSsh.ps1`。
 - 不读取非 Markdown 文件，不返回服务可执行路径或参数，不打印环境变量。
 - 文档中的 `operational-snapshot` 只能用于导航和差异线索；“当前是否运行”必须调用 `query_runtime_status`。

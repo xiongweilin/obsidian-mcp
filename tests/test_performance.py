@@ -7,7 +7,7 @@ import pytest
 
 from ratio_mcp.notes import NoteRepository
 
-_REAL_VAULT = Path(r"D:\download\ratio")
+_REAL_VAULT = Path(r"D:\agent\ratio")
 
 
 @pytest.fixture
