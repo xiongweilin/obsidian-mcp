@@ -1,31 +1,31 @@
 # ratio-mcp
 
-`ratio-mcp` 是面向个人 `D:\agent\ratio` 知识库和真实运行环境的只读 MCP 服务。它不建立向量库，不复制知识库，也不让 Agent 执行任意命令；Codex 通过五个窄接口定位文档、读取小节、查看行动看板并查询当前 Windows、Docker 与云端状态。
+`ratio-mcp` is a read-only MCP service for the personal `D:\agent\ratio` knowledge base and the live runtime environment. It builds no vector store, copies no knowledge base, and lets the Agent run no arbitrary commands; Codex locates documents, reads sections, views the action board, and queries current Windows, Docker, and cloud state through five narrow interfaces.
 
-## 工具契约
+## Tool contract
 
-| 工具 | 用途 | 事实类型 |
+| Tool | Purpose | Fact type |
 | --- | --- | --- |
-| `find_runbook` | 从 `个人平台总览.md` 和 `RUNBOOK` 中定位单一运行手册 | 文档导航 |
-| `search_notes` | 按标题、标签、链接、路径、frontmatter、标题块和正文做确定性检索 | 文档证据 |
-| `read_section` | 读取知识库内一个 Markdown 文件或指定标题小节 | 文档证据 |
-| `read_action_board` | 把 `当前行动看板.md` 解析为结构化列与勾选项 | 文档证据 |
-| `query_runtime_status` | 查询 Windows 服务、本机 Docker 或云端 systemd/Docker | 实时证据 |
+| `find_runbook` | Locate a single runbook from `个人平台总览.md` and `RUNBOOK` | Document navigation |
+| `search_notes` | Deterministic retrieval over titles, tags, links, paths, frontmatter, heading blocks, and body | Document evidence |
+| `read_section` | Read one Markdown file or a named heading section in the knowledge base | Document evidence |
+| `read_action_board` | Parse `当前行动看板.md` into structured columns and checkbox items | Document evidence |
+| `query_runtime_status` | Query Windows services, local Docker, or cloud systemd/Docker | Live evidence |
 
-所有列表接口都有数量上限；路径被限制在知识库内（排除 `.git`/`.obsidian` 等目录）；`read_section` 只接受 Markdown；非 UTF-8 文件以替换符容错读入；搜索摘要和正文返回前会遮蔽常见凭据形式。返回的 Markdown 是证据数据而不是 Agent 指令。运行时工具只执行代码中固定的只读命令，不接受 shell 命令参数。
+All list interfaces have a result cap; paths are confined to the knowledge base (excluding `.git`/`.obsidian` and similar directories); `read_section` accepts Markdown only; non-UTF-8 files are read with replacement characters; search summaries and bodies are masked for common credential shapes before return. Returned Markdown is evidence data, not Agent instructions. The runtime tools only execute the fixed read-only commands in code and accept no shell-command arguments.
 
-## 文档
+## Documentation
 
-- [项目边界](docs/boundaries.md)：职责、只读边界、路径允许列表与禁止读取清单。
-- [工具契约](docs/contracts.md)：五个工具的输入输出、错误语义与长度限制。
-- [轻量索引 vs RAG](docs/rag-vs-index.md)：取舍结论（不实现 RAG）。
-- [安装/升级/卸载/故障排查](docs/operations.md)。
-- [公开脱敏骨架](docs/public-skeleton.md)：可分享的公开说明。
-- [Sonar MCP 只读候选配置](docs/sonar-mcp-candidate.md)：已停用，未启用。
-- [Codex MCP 配置脱敏快照](docs/mcp-config-snapshot-20260809.md)：2026-08-09 的 `mcp_servers` 结构快照。
-- 架构选择见 [ADR-0001](docs/decisions/0001-local-read-only-stdio.md) 与 [ADR-0002](docs/decisions/0002-additive-retrieval-and-board-interface.md)。
+- [Project boundaries](docs/boundaries.md): responsibilities, read-only boundary, path allowlist, and prohibited reads.
+- [Tool contract](docs/contracts.md): inputs/outputs, error semantics, and length limits of the five tools.
+- [Lightweight index vs RAG](docs/rag-vs-index.md): the tradeoff decision (RAG is not implemented).
+- [Install / upgrade / uninstall / troubleshooting](docs/operations.md).
+- [Public redaction skeleton](docs/public-skeleton.md): shareable public description.
+- [Sonar MCP read-only candidate config](docs/sonar-mcp-candidate.md): retired, not enabled.
+- [Codex MCP config redaction snapshot](docs/mcp-config-snapshot-20260809.md): snapshot of the `mcp_servers` structure from 2026-08-09.
+- Architecture choices: see [ADR-0001](docs/decisions/0001-local-read-only-stdio.md) and [ADR-0002](docs/decisions/0002-additive-retrieval-and-board-interface.md).
 
-## 快速开始
+## Quick start
 
 ```powershell
 cd D:\agent\ratio-mcp
@@ -33,9 +33,9 @@ uv sync
 uv run ratio-mcp
 ```
 
-最后一条命令启动 STDIO 服务并等待 MCP Host 连接，终端中没有普通提示符是正常行为。
+The last command starts the STDIO service and waits for an MCP host to connect; the absence of a prompt in the terminal is expected behavior.
 
-## 验证命令
+## Verification commands
 
 ```powershell
 uv run ruff check .
@@ -44,47 +44,40 @@ uv run python scripts\smoke_stdio.py
 uv run python scripts\smoke_runtime.py
 ```
 
-`smoke_runtime.py` 会访问真实 Windows、Docker 和个人云端，只输出每个范围的返回数量与警告数，不输出服务详情。
+`smoke_runtime.py` touches real Windows, Docker, and the personal cloud, and only prints the returned count and warning count per scope, not service details.
 
-测试套件还包含两类真实子进程测试（由 CI 和本地 `pytest` 自动运行）：
+The test suite also includes two kinds of real-subprocess tests (run automatically by CI and local `pytest`):
 
-- **契约测试**（`tests/test_contract_stdio.py`）：用标准库 JSON-RPC 客户端
-  直连真实 server 进程，验证 tools/list、五个工具的成功路径、隐私遮蔽与
-  拒绝路径、schema 快照漂移。
-- **生命周期测试**（`tests/test_lifecycle.py`）：并发连接进程结构、客户端
-  关闭/异常退出后的进程回收、子进程超时。
+- **Contract tests** (`tests/test_contract_stdio.py`): a stdlib JSON-RPC client connects directly to the real server process and verifies `tools/list`, the success paths of the five tools, privacy masking and rejection paths, and schema-snapshot drift.
+- **Lifecycle tests** (`tests/test_lifecycle.py`): concurrent connection process structure, process reclamation after client close/abnormal exit, and subprocess timeout.
 
-`tools/list` schema 快照在 `tests/schema-snapshot.json`；schema 变更时
-`test_schema_snapshot.py` 会失败，需人工确认后运行
-`uv run python scripts/update_schema_snapshot.py` 重新生成并提交。
+The `tools/list` schema snapshot lives in `tests/schema-snapshot.json`; when the schema changes, `test_schema_snapshot.py` fails and you must regenerate and commit it with `uv run python scripts/update_schema_snapshot.py` after manual confirmation.
 
-> 本机存在常驻 MCP 会话时，`uv sync` 可能因 `ratio-mcp.exe` 被占用而失败
-> （见 `docs/operations.md`）；本地验证可用 `uv run --no-sync ...`，CI 在
-> 全新 runner 上不受影响。
+> When a resident MCP session exists on this machine, `uv sync` can fail because `ratio-mcp.exe` is locked (see `docs/operations.md`); for local verification use `uv run --no-sync ...`, and CI is unaffected on a fresh runner.
 
-## Codex 接入
+## Codex integration
 
-Codex 使用全局 `~/.codex/config.toml` 中的 STDIO 条目启动本项目；CLI、IDE 扩展和桌面 App 在同一台主机上共享该配置。当前安装命令为：
+Codex launches this project through the STDIO entry in the global `~/.codex/config.toml`; the CLI, IDE extension, and desktop app share that config on the same host. Current install command:
 
 ```powershell
 codex mcp add ratio -- %USERPROFILE%\scoop\shims\uv.exe run --directory D:\agent\ratio-mcp ratio-mcp
 ```
 
-查看与回滚：
+View and roll back:
 
 ```powershell
 codex mcp get ratio
 codex mcp remove ratio
 ```
 
-修改 MCP 配置后需要重启 Codex 客户端或扩展。项目本身不监听端口，Codex 按需启动进程。
+After changing the MCP config, restart the Codex client or extension. The project itself listens on no port; Codex starts the process on demand.
 
-## 运行边界
+## Runtime boundaries
 
-- 默认知识库：`D:\agent\ratio`。
-- 默认云端入口：`%USERPROFILE%\.local\bin\Invoke-RatioSsh.ps1`。
-- 不读取非 Markdown 文件，不返回服务可执行路径或参数，不打印环境变量。
-- 文档中的 `operational-snapshot` 只能用于导航和差异线索；“当前是否运行”必须调用 `query_runtime_status`。
-- MCP 不保存检索内容、运行时结果或日志数据；进程退出后没有新增数据保留。
+- Default knowledge base: `D:\agent\ratio`.
+- Default cloud entry: `%USERPROFILE%\.local\bin\Invoke-RatioSsh.ps1`.
+- Does not read non-Markdown files, does not return service executable paths or arguments, does not print environment variables.
+- `operational-snapshot` in documents is only for navigation and drift clues; "is it currently running" must be answered with `query_runtime_status`.
+- The MCP persists no retrieved content, runtime results, or log data; nothing new is retained after the process exits.
 
-架构选择见 [ADR-0001](docs/decisions/0001-local-read-only-stdio.md)。
+Architecture choices: see [ADR-0001](docs/decisions/0001-local-read-only-stdio.md).
