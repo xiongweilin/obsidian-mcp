@@ -1,9 +1,6 @@
 # ratio-mcp
 
 [![CI](https://github.com/ratiolin/ratio-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/ratiolin/ratio-mcp/actions/workflows/ci.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=metratio_ratio-mcp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=metratio_ratio-mcp) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=metratio_ratio-mcp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=metratio_ratio-mcp) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](pyproject.toml)
-- [Code of conduct](CODE_OF_CONDUCT.md) - [Contributing](CONTRIBUTING.md) - [MIT license](LICENSE) - [Security](SECURITY.md)
-
-
 `ratio-mcp` is a read-only MCP service for the personal `D:\agent\ratio` knowledge base and the live runtime environment. It builds no vector store, copies no knowledge base, and lets the Agent run no arbitrary commands; Codex locates documents, reads sections, views the action board, and queries current Windows, Docker, and cloud state through five narrow interfaces.
 
 ## Tool contract
@@ -85,3 +82,4 @@ After changing the MCP config, restart the Codex client or extension. The projec
 - The MCP persists no retrieved content, runtime results, or log data; nothing new is retained after the process exits.
 
 Architecture choices: see [ADR-0001](docs/decisions/0001-local-read-only-stdio.md).
+
