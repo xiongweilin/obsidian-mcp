@@ -26,7 +26,9 @@ def _ensure_vault() -> None:
     vault = Path(tempfile.mkdtemp(prefix="ratio-mcp-smoke-vault-"))
     runbook = vault / "RUNBOOK"
     runbook.mkdir()
-    (vault / "个人平台总览.md").write_text(
+    model = vault / "元模型"
+    model.mkdir()
+    (model / "个人平台总览.md").write_text(
         "---\ndocument_type: moc\n"
         "document_status: active\n"
         "knowledge_scope: operational\n"

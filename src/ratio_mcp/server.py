@@ -89,7 +89,7 @@ def create_server(settings: Settings | None = None) -> MCPServer:
 
     @server.tool(title="Read the current action board", annotations=_READ_ONLY)
     async def read_action_board() -> ActionBoardResponse:
-        """Return 当前行动看板.md parsed into columns, checkbox items, and open/done counts."""
+        """Return 个人/当前行动看板.md parsed into columns, checkbox items, and open/done counts."""
 
         return await asyncio.to_thread(notes.read_action_board)
 

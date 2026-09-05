@@ -17,7 +17,8 @@ from ratio_mcp.models import (
 from ratio_mcp.privacy import redact_sensitive_text
 
 SearchScope = Literal["all", "runbook", "operational", "conceptual"]
-ACTION_BOARD_PATH = "当前行动看板.md"
+ROUTER_PATH = "元模型/个人平台总览.md"
+ACTION_BOARD_PATH = "个人/当前行动看板.md"
 
 _EXCLUDED_PARTS = {".git", ".obsidian", ".venv", "node_modules", "__pycache__"}
 _HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
@@ -135,7 +136,7 @@ class NoteRepository:
         )
 
     def read_action_board(self) -> ActionBoardResponse:
-        """Parse the current action board (当前行动看板.md) into structured columns."""
+        """Parse the current action board (个人/当前行动看板.md) into structured columns."""
 
         document = self._load_relative(ACTION_BOARD_PATH)
         return _parse_action_board(document)
@@ -176,7 +177,7 @@ class NoteRepository:
         return _load_document(self.root, candidate)
 
     def _router_matches(self, topic: str) -> list[SearchHit]:
-        router = self.root / "个人平台总览.md"
+        router = self.root / ROUTER_PATH
         if not router.is_file():
             return []
         document = _load_document(self.root, router)
@@ -296,7 +297,7 @@ def _in_scope(document: NoteDocument, scope: SearchScope) -> bool:
         return (
             "operational" in knowledge_scope
             or first_part in {"RUNBOOK", "运维笔记"}
-            or document.relative_path == "个人平台总览.md"
+            or document.relative_path == ROUTER_PATH
         )
     return not _in_scope(document, "operational")
 

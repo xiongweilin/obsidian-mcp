@@ -14,7 +14,9 @@ def anyio_backend() -> str:
 def vault(tmp_path: Path) -> Path:
     runbook = tmp_path / "RUNBOOK"
     runbook.mkdir()
-    (tmp_path / "个人平台总览.md").write_text(
+    model = tmp_path / "元模型"
+    model.mkdir()
+    (model / "个人平台总览.md").write_text(
         """---
 document_type: moc
 document_status: active
@@ -60,8 +62,10 @@ def rich_vault(tmp_path: Path) -> Path:
     runbook.mkdir()
     model = tmp_path / "领域模型"
     model.mkdir()
+    overview = tmp_path / "元模型"
+    overview.mkdir()
 
-    (tmp_path / "个人平台总览.md").write_text(
+    (overview / "个人平台总览.md").write_text(
         """---
 document_type: moc
 document_status: active
@@ -124,7 +128,9 @@ tags:
 """,
         encoding="utf-8",
     )
-    (tmp_path / "当前行动看板.md").write_text(
+    personal = tmp_path / "个人"
+    personal.mkdir()
+    (personal / "当前行动看板.md").write_text(
         """---
 document_type: kanban
 knowledge_scope: task-state
@@ -159,4 +165,3 @@ tags:
         "只有正文，没有标题。\n#无空格标题\n###\n#### 尾随空格  \n---\n", encoding="utf-8"
     )
     return tmp_path
-

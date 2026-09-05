@@ -39,7 +39,9 @@ def contract_vault_module(tmp_path_factory: pytest.TempPathFactory) -> Path:
 def contract_vault_factory(tmp_path: Path) -> Path:
     runbook = tmp_path / "RUNBOOK"
     runbook.mkdir()
-    (tmp_path / "个人平台总览.md").write_text(
+    model = tmp_path / "元模型"
+    model.mkdir()
+    (model / "个人平台总览.md").write_text(
         """---
 document_type: moc
 document_status: active
@@ -67,7 +69,9 @@ password: contract-secret-must-not-leak
 """,
         encoding="utf-8",
     )
-    (tmp_path / "当前行动看板.md").write_text(
+    personal = tmp_path / "个人"
+    personal.mkdir()
+    (personal / "当前行动看板.md").write_text(
         """---
 document_type: kanban
 updated: 2026-08-09

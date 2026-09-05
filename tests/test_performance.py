@@ -16,7 +16,9 @@ def wide_vault(tmp_path: Path) -> Path:
 
     runbook = tmp_path / "RUNBOOK"
     runbook.mkdir()
-    (tmp_path / "个人平台总览.md").write_text(
+    model = tmp_path / "元模型"
+    model.mkdir()
+    (model / "个人平台总览.md").write_text(
         "# 个人平台总览\n\n## 入口\n\n进入 [[RUNBOOK/手册 0]]。\n", encoding="utf-8"
     )
     for index in range(120):
@@ -43,10 +45,10 @@ def test_router_read_stays_under_budget(wide_vault: Path) -> None:
     repository = NoteRepository(wide_vault)
     started = time.perf_counter()
 
-    result = repository.read_section("个人平台总览.md")
+    result = repository.read_section("元模型/个人平台总览.md")
 
     elapsed_ms = (time.perf_counter() - started) * 1000
-    assert result.path == "个人平台总览.md"
+    assert result.path == "元模型/个人平台总览.md"
     assert elapsed_ms < 500, f"router read took {elapsed_ms:.0f}ms"
 
 
@@ -64,13 +66,13 @@ def test_real_vault_readonly_subset_baselines() -> None:
     board_ms = (time.perf_counter() - started) * 1000
 
     started = time.perf_counter()
-    router = repository.read_section("个人平台总览.md")
+    router = repository.read_section("元模型/个人平台总览.md")
     router_ms = (time.perf_counter() - started) * 1000
 
     search = repository.search("环境运维", scope="runbook", limit=5)
 
     assert board.total_items >= 1
-    assert router.path == "个人平台总览.md"
+    assert router.path == "元模型/个人平台总览.md"
     assert search.returned >= 1
     assert board_ms < 200, f"action board read took {board_ms:.0f}ms (budget 200ms)"
     assert router_ms < 200, f"router read took {router_ms:.0f}ms (budget 200ms)"

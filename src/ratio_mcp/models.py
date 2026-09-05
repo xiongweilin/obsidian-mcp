@@ -32,7 +32,7 @@ class RunbookResponse(BaseModel):
     total_matches: int = Field(ge=0)
     returned: int = Field(ge=0)
     items: list[SearchHit]
-    router_path: str = "个人平台总览.md"
+    router_path: str = "元模型/个人平台总览.md"
 
 
 class SectionResponse(BaseModel):

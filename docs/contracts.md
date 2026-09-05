@@ -42,7 +42,7 @@
 
 ## 1. `find_runbook` — 运行手册定位
 
-按关键词定位单一相关 RUNBOOK。先对 `个人平台总览.md`（路由表）中的 `RUNBOOK/...` Wikilink 打分（链接命中 +100），再对 `RUNBOOK/` 目录全文检索，最后按路径合并去重、保留最高分。
+按关键词定位单一相关 RUNBOOK。先对 `元模型/个人平台总览.md`（路由表）中的 `RUNBOOK/...` Wikilink 打分（链接命中 +100），再对 `RUNBOOK/` 目录全文检索，最后按路径合并去重、保留最高分。
 
 | 参数 | 类型 | 约束 | 说明 |
 | --- | --- | --- | --- |
@@ -56,14 +56,14 @@
 | `topic` | 规范化后的查询词 |
 | `total_matches` / `returned` | 去重后命中总数 / 本次返回数 |
 | `items` | `SearchHit[]`：`path`（vault 相对路径）、`title`、`heading`、`line_start`、`score`、`snippet`、`document_type`、`document_status`、`knowledge_scope`、`source_kind=documentation` |
-| `router_path` | 恒为 `个人平台总览.md` |
+| `router_path` | 恒为 `元模型/个人平台总览.md` |
 
 错误语义：
 
 - 无结果：`items=[]`、`total_matches=0`；
 - 重复：同一 RUNBOOK 同时被路由与全文命中时只出现一次，保留最高分；
 - 断链：路由表中指向不存在文件的链接静默跳过，不影响其他结果；
-- 循环：路由只解析 `个人平台总览.md` 一层，不递归，天然终止。
+- 循环：路由只解析 `元模型/个人平台总览.md` 一层，不递归，天然终止。
 
 ## 2. `search_notes` — 确定性检索
 
@@ -121,20 +121,20 @@ scope：`all`（全部）、`runbook`（仅 `RUNBOOK/`）、`operational`（RUNB
 
 ## 4. `read_action_board` — 当前行动看板（结构化）
 
-无参数。读取 vault 根目录 `当前行动看板.md`，按 Obsidian Kanban 格式解析为结构化列。
+无参数。读取 vault 中的 `个人/当前行动看板.md`，按 Obsidian Kanban 格式解析为结构化列。
 
 返回 `ActionBoardResponse`：
 
 | 字段 | 说明 |
 | --- | --- |
-| `path` / `title` | 恒为 `当前行动看板.md` / 文档标题 |
+| `path` / `title` | 恒为 `个人/当前行动看板.md` / 文档标题 |
 | `columns` | `ActionBoardColumn[]`：H2+ 标题作为列名（H1 文档标题不是列），列顺序与文档一致；**空列保留** |
 | `columns[].items` | `ActionBoardItem[]`：`text`（勾选项正文）、`status`（`open`/`done`，对应 `- [ ]`/`- [x]`）、`details`（缩进或换行的子项文本，剥离 `- `/`* ` 前缀） |
 | `total_items` / `open_items` / `done_items` | 计数 |
 | `updated` / `last_verified` | frontmatter 中的日期，缺省为 null |
 | `redactions` / `source_kind` | 遮蔽次数 / 恒为 `documentation` |
 
-错误语义：`当前行动看板.md` 不存在时抛 `ValueError`（tool error）。
+错误语义：`个人/当前行动看板.md` 不存在时抛 `ValueError`（tool error）。
 
 ## 5. `query_runtime_status` — 实时运行状态
 

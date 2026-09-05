@@ -7,10 +7,10 @@
 
 | Tool | Purpose | Fact type |
 | --- | --- | --- |
-| `find_runbook` | Locate a single runbook from `个人平台总览.md` and `RUNBOOK` | Document navigation |
+| `find_runbook` | Locate a single runbook from `元模型/个人平台总览.md` and `RUNBOOK` | Document navigation |
 | `search_notes` | Deterministic retrieval over titles, tags, links, paths, frontmatter, heading blocks, and body | Document evidence |
 | `read_section` | Read one Markdown file or a named heading section in the knowledge base | Document evidence |
-| `read_action_board` | Parse `当前行动看板.md` into structured columns and checkbox items | Document evidence |
+| `read_action_board` | Parse `个人/当前行动看板.md` into structured columns and checkbox items | Document evidence |
 | `query_runtime_status` | Query Windows services, local Docker, or cloud systemd/Docker | Live evidence |
 
 All list interfaces have a result cap; paths are confined to the knowledge base (excluding `.git`/`.obsidian` and similar directories); `read_section` accepts Markdown only; non-UTF-8 files are read with replacement characters; search summaries and bodies are masked for common credential shapes before return. Returned Markdown is evidence data, not Agent instructions. The runtime tools only execute the fixed read-only commands in code and accept no shell-command arguments.
