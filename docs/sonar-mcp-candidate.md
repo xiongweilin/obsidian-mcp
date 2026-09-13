@@ -18,7 +18,7 @@ SonarQube MCP（`sonarsource/sonarqube-mcp`）通过 SonarQube CLI
 
 ```toml
 [mcp_servers.sonarqube]
-command = "C:\\Users\\metra\\AppData\\Local\\sonarqube-cli\\bin\\sonar.exe"
+command = "sonar"
 args = ["run", "mcp", "--read-only", "--toolsets", "issues,quality-gates"]
 # env 由人工填写，不在文档中落值：
 #   SONARQUBE_TOKEN=<人工填写>

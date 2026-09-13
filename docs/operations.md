@@ -35,7 +35,7 @@ uv run python scripts\smoke_runtime.py
 Codex 使用全局 `~/.codex/config.toml` 的 STDIO 条目启动本项目。当前机器上 `[mcp_servers.ratio]` 已配置（含 `command` 与 `args` 键）。如需在另一台机器配置：
 
 ```powershell
-codex mcp add ratio -- %USERPROFILE%\scoop\shims\uv.exe run --directory D:\agent\ratio-mcp ratio-mcp
+codex mcp add ratio -- uv run --directory D:\agent\ratio-mcp ratio-mcp
 ```
 
 查看与回滚：

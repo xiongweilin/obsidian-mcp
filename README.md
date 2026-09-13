@@ -61,7 +61,7 @@ The `tools/list` schema snapshot lives in `tests/schema-snapshot.json`; when the
 Codex launches this project through the STDIO entry in the global `~/.codex/config.toml`; the CLI, IDE extension, and desktop app share that config on the same host. Current install command:
 
 ```powershell
-codex mcp add ratio -- %USERPROFILE%\scoop\shims\uv.exe run --directory D:\agent\ratio-mcp ratio-mcp
+codex mcp add ratio -- uv run --directory D:\agent\ratio-mcp ratio-mcp
 ```
 
 View and roll back:
@@ -76,7 +76,7 @@ After changing the MCP config, restart the Codex client or extension. The projec
 ## Runtime boundaries
 
 - Default knowledge base: `D:\agent\ratio`.
-- Default cloud entry: `%USERPROFILE%\.local\bin\Invoke-RatioSsh.ps1`.
+- Default cloud entry: `~/.local/bin/Invoke-RatioSsh.ps1`.
 - Does not read non-Markdown files, does not return service executable paths or arguments, does not print environment variables.
 - `operational-snapshot` in documents is only for navigation and drift clues; "is it currently running" must be answered with `query_runtime_status`.
 - The MCP persists no retrieved content, runtime results, or log data; nothing new is retained after the process exits.
