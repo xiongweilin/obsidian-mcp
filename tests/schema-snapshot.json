@@ -2,7 +2,7 @@
   "generated_by": "scripts/update_schema_snapshot.py",
   "server_info": {
     "name": "ratio",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "tools_list": {
     "tools": [
@@ -11,7 +11,7 @@
           "openWorldHint": false,
           "readOnlyHint": true
         },
-        "description": "Locate the most relevant RUNBOOK using the platform overview and note content.",
+        "description": "Locate the most relevant RUNBOOK using the vault README router and note content.",
         "inputSchema": {
           "properties": {
             "limit": {
@@ -143,7 +143,7 @@
               "type": "integer"
             },
             "router_path": {
-              "default": "元模型/个人平台总览.md",
+              "default": "README.md",
               "title": "Router Path",
               "type": "string"
             },
@@ -455,157 +455,6 @@
           "type": "object"
         },
         "title": "Read one ratio Markdown section"
-      },
-      {
-        "annotations": {
-          "openWorldHint": false,
-          "readOnlyHint": true
-        },
-        "description": "Return 个人/当前行动看板.md parsed into columns, checkbox items, and open/done counts.",
-        "inputSchema": {
-          "properties": {},
-          "title": "read_action_boardArguments",
-          "type": "object"
-        },
-        "name": "read_action_board",
-        "outputSchema": {
-          "$defs": {
-            "ActionBoardColumn": {
-              "properties": {
-                "items": {
-                  "items": {
-                    "$ref": "#/$defs/ActionBoardItem"
-                  },
-                  "title": "Items",
-                  "type": "array"
-                },
-                "name": {
-                  "description": "Section heading of the board column.",
-                  "title": "Name",
-                  "type": "string"
-                }
-              },
-              "required": [
-                "name",
-                "items"
-              ],
-              "title": "ActionBoardColumn",
-              "type": "object"
-            },
-            "ActionBoardItem": {
-              "properties": {
-                "details": {
-                  "description": "Indented sub-bullets under the item (e.g. 下一动作/完成条件/证据).",
-                  "items": {
-                    "type": "string"
-                  },
-                  "title": "Details",
-                  "type": "array"
-                },
-                "status": {
-                  "description": "Checkbox state: open or done.",
-                  "enum": [
-                    "open",
-                    "done"
-                  ],
-                  "title": "Status",
-                  "type": "string"
-                },
-                "text": {
-                  "description": "Main line of the checkbox item.",
-                  "title": "Text",
-                  "type": "string"
-                }
-              },
-              "required": [
-                "text",
-                "status"
-              ],
-              "title": "ActionBoardItem",
-              "type": "object"
-            }
-          },
-          "properties": {
-            "columns": {
-              "items": {
-                "$ref": "#/$defs/ActionBoardColumn"
-              },
-              "title": "Columns",
-              "type": "array"
-            },
-            "done_items": {
-              "minimum": 0,
-              "title": "Done Items",
-              "type": "integer"
-            },
-            "last_verified": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Last Verified"
-            },
-            "open_items": {
-              "minimum": 0,
-              "title": "Open Items",
-              "type": "integer"
-            },
-            "path": {
-              "description": "Path relative to the ratio vault.",
-              "title": "Path",
-              "type": "string"
-            },
-            "redactions": {
-              "minimum": 0,
-              "title": "Redactions",
-              "type": "integer"
-            },
-            "source_kind": {
-              "const": "documentation",
-              "default": "documentation",
-              "title": "Source Kind",
-              "type": "string"
-            },
-            "title": {
-              "title": "Title",
-              "type": "string"
-            },
-            "total_items": {
-              "minimum": 0,
-              "title": "Total Items",
-              "type": "integer"
-            },
-            "updated": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Updated"
-            }
-          },
-          "required": [
-            "path",
-            "title",
-            "columns",
-            "total_items",
-            "open_items",
-            "done_items",
-            "redactions"
-          ],
-          "title": "ActionBoardResponse",
-          "type": "object"
-        },
-        "title": "Read the current action board"
       },
       {
         "annotations": {

@@ -20,7 +20,6 @@ EXPECTED_TOOLS = {
     "find_runbook",
     "search_notes",
     "read_section",
-    "read_action_board",
     "query_runtime_status",
 }
 
@@ -39,9 +38,7 @@ def contract_vault_module(tmp_path_factory: pytest.TempPathFactory) -> Path:
 def contract_vault_factory(tmp_path: Path) -> Path:
     runbook = tmp_path / "RUNBOOK"
     runbook.mkdir()
-    model = tmp_path / "元模型"
-    model.mkdir()
-    (model / "个人平台总览.md").write_text(
+    (tmp_path / "README.md").write_text(
         """---
 document_type: moc
 document_status: active
@@ -66,26 +63,6 @@ document_status: active
 先检查 Tailscale 当前路径。
 
 password: contract-secret-must-not-leak
-""",
-        encoding="utf-8",
-    )
-    personal = tmp_path / "个人"
-    personal.mkdir()
-    (personal / "当前行动看板.md").write_text(
-        """---
-document_type: kanban
-updated: 2026-08-09
----
-# 当前行动看板
-
-## 当前主线
-
-- [ ] 完成契约测试
-      - 下一动作：断言五个工具的成功路径。
-
-## 已完成
-
-- [x] 建立只读边界
 """,
         encoding="utf-8",
     )
@@ -166,17 +143,6 @@ def test_read_section_success(server: StdioMCPClient) -> None:
     assert "Tailscale" in content["content"]
     assert "contract-secret-must-not-leak" not in content["content"]
     assert content["redactions"] >= 1
-
-
-def test_read_action_board_success(server: StdioMCPClient) -> None:
-    result = server.call_tool("read_action_board", {})
-
-    assert result["isError"] is False
-    content = result["structuredContent"]
-    assert content["total_items"] >= 1
-    assert content["open_items"] >= 1
-    assert content["columns"][0]["name"]
-    assert content["source_kind"] == "documentation"
 
 
 def test_query_runtime_status_success_shape(server: StdioMCPClient) -> None:

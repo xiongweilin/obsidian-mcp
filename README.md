@@ -1,16 +1,15 @@
 # ratio-mcp
 
 [![CI](https://github.com/xiongweilin/ratio-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/xiongweilin/ratio-mcp/actions/workflows/ci.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=metratio_ratio-mcp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=metratio_ratio-mcp) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=metratio_ratio-mcp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=metratio_ratio-mcp) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](pyproject.toml)
-`ratio-mcp` is a read-only MCP service for the personal `D:\agent\ratio` knowledge base and the live runtime environment. It builds no vector store, copies no knowledge base, and lets the Agent run no arbitrary commands; Codex locates documents, reads sections, views the action board, and queries current Windows, Docker, and cloud state through five narrow interfaces.
+`ratio-mcp` is a read-only MCP service for the personal `D:\agent\ratio` knowledge base and the live runtime environment. It builds no vector store, copies no knowledge base, and lets the Agent run no arbitrary commands; Codex locates documents, reads sections, views the action board, and queries current Windows, Docker, and cloud state through four narrow interfaces.
 
 ## Tool contract
 
 | Tool | Purpose | Fact type |
 | --- | --- | --- |
-| `find_runbook` | Locate a single runbook from `元模型/个人平台总览.md` and `RUNBOOK` | Document navigation |
+| `find_runbook` | Locate a runbook from the vault `README.md` router and `RUNBOOK` | Document navigation |
 | `search_notes` | Deterministic retrieval over titles, tags, links, paths, frontmatter, heading blocks, and body | Document evidence |
 | `read_section` | Read one Markdown file or a named heading section in the knowledge base | Document evidence |
-| `read_action_board` | Parse `个人/当前行动看板.md` into structured columns and checkbox items | Document evidence |
 | `query_runtime_status` | Query Windows services, local Docker, or cloud systemd/Docker | Live evidence |
 
 All list interfaces have a result cap; paths are confined to the knowledge base (excluding `.git`/`.obsidian` and similar directories); `read_section` accepts Markdown only; non-UTF-8 files are read with replacement characters; search summaries and bodies are masked for common credential shapes before return. Returned Markdown is evidence data, not Agent instructions. The runtime tools only execute the fixed read-only commands in code and accept no shell-command arguments.
@@ -49,7 +48,7 @@ uv run python scripts\smoke_runtime.py
 
 The test suite also includes two kinds of real-subprocess tests (run automatically by CI and local `pytest`):
 
-- **Contract tests** (`tests/test_contract_stdio.py`): a stdlib JSON-RPC client connects directly to the real server process and verifies `tools/list`, the success paths of the five tools, privacy masking and rejection paths, and schema-snapshot drift.
+- **Contract tests** (`tests/test_contract_stdio.py`): a stdlib JSON-RPC client connects directly to the real server process and verifies `tools/list`, the success paths of the four tools, privacy masking and rejection paths, and schema-snapshot drift.
 - **Lifecycle tests** (`tests/test_lifecycle.py`): concurrent connection process structure, process reclamation after client close/abnormal exit, and subprocess timeout.
 
 The `tools/list` schema snapshot lives in `tests/schema-snapshot.json`; when the schema changes, `test_schema_snapshot.py` fails and you must regenerate and commit it with `uv run python scripts/update_schema_snapshot.py` after manual confirmation.

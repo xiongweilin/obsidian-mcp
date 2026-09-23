@@ -108,7 +108,7 @@ def test_read_section_accepts_heading_with_hash_prefix(rich_vault: Path) -> None
 
 def test_read_section_truncates_and_marks(rich_vault: Path) -> None:
     result = NoteRepository(rich_vault).read_section(
-        "个人/当前行动看板.md", max_chars=100
+        "RUNBOOK/网络手册.md", max_chars=100
     )
 
     assert result.truncated

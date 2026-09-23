@@ -26,9 +26,7 @@ def _ensure_vault() -> None:
     vault = Path(tempfile.mkdtemp(prefix="ratio-mcp-smoke-vault-"))
     runbook = vault / "RUNBOOK"
     runbook.mkdir()
-    model = vault / "元模型"
-    model.mkdir()
-    (model / "个人平台总览.md").write_text(
+    (vault / "README.md").write_text(
         "---\ndocument_type: moc\n"
         "document_status: active\n"
         "knowledge_scope: operational\n"
@@ -66,7 +64,6 @@ async def smoke() -> None:
             "find_runbook",
             "search_notes",
             "read_section",
-            "read_action_board",
             "query_runtime_status",
         }
         if names != expected:

@@ -4,7 +4,7 @@
 
 ## 这是什么
 
-`ratio-mcp` 是一个**只读**的 MCP（Model Context Protocol）服务器，面向个人 Markdown 知识库。它让 Codex 等 Agent 通过窄接口定位文档、读取小节、查看行动看板，并查询本机与云端的运行状态——但不给 Agent 任意命令执行或任意文件访问。
+`ratio-mcp` 是一个**只读**的 MCP（Model Context Protocol）服务器，面向个人 Markdown 知识库。它让 Codex 等 Agent 通过窄接口定位文档、读取小节，并查询本机与云端的运行状态——但不给 Agent 任意命令执行或任意文件访问。
 
 设计要点：
 
@@ -20,7 +20,7 @@ ratio-mcp/
 ├── pyproject.toml          # uv 工程配置
 ├── src/ratio_mcp/
 │   ├── server.py           # MCP 工具定义
-│   ├── notes.py            # Markdown 检索、小节读取、行动看板解析
+│   ├── notes.py            # Markdown 检索、小节读取
 │   ├── runtime.py          # 只读运行状态查询
 │   ├── privacy.py          # 凭据遮蔽
 │   ├── config.py           # 路径与命令配置
@@ -37,7 +37,6 @@ ratio-mcp/
 | `find_runbook` | 按运维主题定位单一相关运行手册 |
 | `search_notes` | 按标题/标签/链接/全文做确定性检索 |
 | `read_section` | 读取一个 Markdown 文件或指定标题小节（有长度上限） |
-| `read_action_board` | 把行动看板解析为结构化列与勾选项 |
 | `query_runtime_status` | 查询本机服务、容器与云端的实时状态 |
 
 ## 如何接入

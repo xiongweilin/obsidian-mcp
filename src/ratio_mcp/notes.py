@@ -4,11 +4,9 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
+from urllib.parse import unquote
 
 from ratio_mcp.models import (
-    ActionBoardColumn,
-    ActionBoardItem,
-    ActionBoardResponse,
     RunbookResponse,
     SearchHit,
     SearchResponse,
@@ -17,13 +15,12 @@ from ratio_mcp.models import (
 from ratio_mcp.privacy import redact_sensitive_text
 
 SearchScope = Literal["all", "runbook", "operational", "conceptual"]
-ROUTER_PATH = "元模型/个人平台总览.md"
-ACTION_BOARD_PATH = "个人/当前行动看板.md"
+ROUTER_PATH = "README.md"
 
 _EXCLUDED_PARTS = {".git", ".obsidian", ".venv", "node_modules", "__pycache__"}
 _HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 _WIKILINK = re.compile(r"\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]")
-_CHECKBOX = re.compile(r"^\s*[-*]\s+\[([ xX])\]\s+(.+?)\s*$")
+_MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 
 
 @dataclass(frozen=True, slots=True)
@@ -135,12 +132,6 @@ class NoteRepository:
             redactions=redactions,
         )
 
-    def read_action_board(self) -> ActionBoardResponse:
-        """Parse the current action board (个人/当前行动看板.md) into structured columns."""
-
-        document = self._load_relative(ACTION_BOARD_PATH)
-        return _parse_action_board(document)
-
     def _documents(self, scope: SearchScope) -> list[NoteDocument]:
         if not self.root.is_dir():
             raise ValueError("The configured ratio vault root is unavailable.")
@@ -186,8 +177,8 @@ class NoteRepository:
             score = _score_chunk(chunk, topic)
             if score <= 0:
                 continue
-            for link in _WIKILINK.findall(chunk.text):
-                normalized = link.replace("\\", "/")
+            for link in _document_links(chunk.text):
+                normalized = unquote(link).replace("\\", "/").split("#", 1)[0]
                 if not normalized.startswith("RUNBOOK/"):
                     continue
                 relative = (
@@ -213,6 +204,12 @@ class NoteRepository:
                     )
                 )
         return routed
+
+
+def _document_links(text: str) -> list[str]:
+    links = list(_WIKILINK.findall(text))
+    links.extend(_MARKDOWN_LINK.findall(text))
+    return links
 
 
 def _load_document(root: Path, path: Path) -> NoteDocument:
@@ -327,7 +324,7 @@ def _score_chunk(chunk: NoteChunk, query: str) -> int:
     title = chunk.document.title.casefold()
     heading = (chunk.heading or "").casefold()
     tags = " ".join(chunk.document.tags).casefold()
-    links = " ".join(_WIKILINK.findall(chunk.text)).casefold()
+    links = " ".join(_document_links(chunk.text)).casefold()
     metadata = " ".join(chunk.document.metadata.values()).casefold()
     body = chunk.text.casefold()
     score = 0
@@ -376,77 +373,3 @@ def _hit_from_chunk(chunk: NoteChunk, score: int, query: str) -> SearchHit:
         document_status=document.metadata.get("document_status"),
         knowledge_scope=document.metadata.get("knowledge_scope"),
     )
-
-
-def _parse_action_board(document: NoteDocument) -> ActionBoardResponse:
-    """Parse an Obsidian Kanban Markdown document into ordered columns and items."""
-
-    columns: list[ActionBoardColumn] = []
-    current_column: str | None = None
-    current_items: list[tuple[str, str, list[str]]] = []
-    pending_details: list[str] = []
-
-    def flush() -> None:
-        nonlocal current_column, current_items, pending_details
-        if current_column is None:
-            return
-        parsed: list[ActionBoardItem] = []
-        for raw_text, raw_status, details in current_items:
-            text, _ = redact_sensitive_text(raw_text)
-            clean_details: list[str] = []
-            for detail in details:
-                clean, _ = redact_sensitive_text(detail)
-                clean_details.append(clean)
-            parsed.append(
-                ActionBoardItem(
-                    text=text,
-                    status="done" if raw_status in {"x", "X"} else "open",
-                    details=clean_details,
-                )
-            )
-        columns.append(ActionBoardColumn(name=current_column, items=parsed))
-        current_items = []
-        pending_details = []
-
-    for line in document.lines:
-        heading = _HEADING.match(line)
-        if heading and len(heading.group(1)) >= 2:
-            # Obsidian Kanban columns are H2+; the H1 document title is not a column.
-            flush()
-            current_column = heading.group(2).strip()
-            continue
-        checkbox = _CHECKBOX.match(line)
-        if checkbox:
-            pending_details = []
-            current_items.append((checkbox.group(2), checkbox.group(1), pending_details))
-            continue
-        if current_items and line.strip() and line[:1].isspace():
-            pending_details.append(_strip_bullet_marker(line.strip()))
-            continue
-        if current_items and line.strip() and not line[:1].isspace():
-            # A non-indented text line directly after a checkbox belongs to the
-            # item (Obsidian Kanban keeps wrapped lines flush left).
-            pending_details.append(_strip_bullet_marker(line.strip()))
-    flush()
-
-    items = [item for column in columns for item in column.items]
-    _, redactions = redact_sensitive_text(
-        "\n".join(item.text + "\n" + "\n".join(item.details) for item in items)
-    )
-    return ActionBoardResponse(
-        path=document.relative_path,
-        title=document.title,
-        columns=columns,
-        total_items=len(items),
-        open_items=sum(1 for item in items if item.status == "open"),
-        done_items=sum(1 for item in items if item.status == "done"),
-        updated=document.metadata.get("updated"),
-        last_verified=document.metadata.get("last_verified"),
-        redactions=redactions,
-    )
-
-
-def _strip_bullet_marker(line: str) -> str:
-    if line.startswith(("- ", "* ")):
-        return line[2:].strip()
-    return line
