@@ -190,7 +190,6 @@ def test_concurrent_clients_all_serve_requests(
                 "find_runbook",
                 "search_notes",
                 "read_section",
-                "read_action_board",
                 "query_runtime_status",
             }
             result = client.call_tool("search_notes", {"query": "状态", "limit": 5})
