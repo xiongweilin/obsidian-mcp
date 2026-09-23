@@ -125,9 +125,7 @@ def lifecycle_vault(tmp_path_factory: pytest.TempPathFactory) -> Path:
     vault = tmp_path_factory.mktemp("lifecycle-vault")
     runbook = vault / "RUNBOOK"
     runbook.mkdir()
-    model = vault / "元模型"
-    model.mkdir()
-    (model / "个人平台总览.md").write_text(
+    (vault / "README.md").write_text(
         "---\ndocument_type: moc\n---\n# 总览\n\n## 网络\n\n进入 [[RUNBOOK/手册]]。\n",
         encoding="utf-8",
     )
