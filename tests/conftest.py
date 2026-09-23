@@ -14,9 +14,7 @@ def anyio_backend() -> str:
 def vault(tmp_path: Path) -> Path:
     runbook = tmp_path / "RUNBOOK"
     runbook.mkdir()
-    model = tmp_path / "元模型"
-    model.mkdir()
-    (model / "个人平台总览.md").write_text(
+    (tmp_path / "README.md").write_text(
         """---
 document_type: moc
 document_status: active
@@ -62,10 +60,7 @@ def rich_vault(tmp_path: Path) -> Path:
     runbook.mkdir()
     model = tmp_path / "领域模型"
     model.mkdir()
-    overview = tmp_path / "元模型"
-    overview.mkdir()
-
-    (overview / "个人平台总览.md").write_text(
+    (tmp_path / "README.md").write_text(
         """---
 document_type: moc
 document_status: active
@@ -125,36 +120,6 @@ tags:
 # 无标签词
 
 正文不包含标签词。
-""",
-        encoding="utf-8",
-    )
-    personal = tmp_path / "个人"
-    personal.mkdir()
-    (personal / "当前行动看板.md").write_text(
-        """---
-document_type: kanban
-knowledge_scope: task-state
-updated: 2026-08-09
-last_verified: 2026-08-09
-tags:
-  - todo
----
-# 当前行动看板
-
-## 当前主线
-
-- [ ] 完成正式会话 2
-      - 下一动作：先做预测。
-      - 完成条件：能解释重试预算。
-
-## 已完成
-
-- [x] 关闭门（2026-08-06）
-      - 证据：检查与测试全绿。
-
-## 收件箱
-
-- [ ] 新事项先放这里。
 """,
         encoding="utf-8",
     )
