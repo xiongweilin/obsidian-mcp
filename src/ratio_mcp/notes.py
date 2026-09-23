@@ -202,11 +202,11 @@ class NoteRepository:
         return routed
 
 
-
 def _document_links(text: str) -> list[str]:
     links = list(_WIKILINK.findall(text))
     links.extend(_MARKDOWN_LINK.findall(text))
     return links
+
 
 def _load_document(root: Path, path: Path) -> NoteDocument:
     text = path.read_text(encoding="utf-8-sig", errors="replace")
