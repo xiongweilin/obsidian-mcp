@@ -48,7 +48,7 @@ def create_server(settings: Settings | None = None) -> MCPServer:
         ],
         limit: Annotated[int, Field(ge=1, le=10)] = 5,
     ) -> RunbookResponse:
-        """Locate the most relevant RUNBOOK using the platform overview and note content."""
+        """Locate the most relevant RUNBOOK using the vault README router and note content."""
 
         return await asyncio.to_thread(notes.find_runbooks, topic, limit)
 
