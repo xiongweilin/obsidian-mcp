@@ -27,15 +27,10 @@ async def test_mcp_contract_and_structured_search(rich_vault: Path, tmp_path: Pa
             "find_runbook",
             "search_notes",
             "read_section",
-            "read_action_board",
             "query_runtime_status",
         }
         result = await client.call_tool("search_notes", {"query": "Tailscale"})
-        board = await client.call_tool("read_action_board", {})
 
     assert result.structured_content is not None
     assert result.structured_content["returned"] >= 1
     assert result.structured_content["items"][0]["source_kind"] == "documentation"
-    assert board.structured_content is not None
-    assert board.structured_content["source_kind"] == "documentation"
-    assert board.structured_content["total_items"] >= 1
