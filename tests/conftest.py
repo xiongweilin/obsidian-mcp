@@ -24,7 +24,7 @@ knowledge_scope: operational
 
 ## 网络入口
 
-公网和 Tailscale 故障进入 [[RUNBOOK/环境运维手册]]。
+公网故障进入 [[RUNBOOK/环境运维手册]]。
 """,
         encoding="utf-8",
     )
