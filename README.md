@@ -1,7 +1,7 @@
 # ratio-mcp
 
 [![CI](https://github.com/xiongweilin/ratio-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/xiongweilin/ratio-mcp/actions/workflows/ci.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=metratio_ratio-mcp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=metratio_ratio-mcp) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=metratio_ratio-mcp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=metratio_ratio-mcp) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](pyproject.toml)
-`ratio-mcp` is a read-only MCP service for the personal `D:\agent\ratio` knowledge base and the live runtime environment. It builds no vector store, copies no knowledge base, and lets the Agent run no arbitrary commands; Codex locates documents, reads sections, views the action board, and queries current Windows, Docker, and cloud state through four narrow interfaces.
+`ratio-mcp` is a read-only MCP service for the personal `D:\agent\ratio` knowledge base and the live runtime environment. It builds no vector store, copies no knowledge base, and lets the Agent run no arbitrary commands; Codex locates documents, reads sections, and queries current Windows, Docker, and cloud state through four narrow interfaces.
 
 ## Tool contract
 
@@ -17,13 +17,10 @@ All list interfaces have a result cap; paths are confined to the knowledge base 
 ## Documentation
 
 - [Project boundaries](docs/boundaries.md): responsibilities, read-only boundary, path allowlist, and prohibited reads.
-- [Tool contract](docs/contracts.md): inputs/outputs, error semantics, and length limits of the five tools.
+- [Tool contract](docs/contracts.md): inputs/outputs, error semantics, and length limits of the four tools.
 - [Lightweight index vs RAG](docs/rag-vs-index.md): the tradeoff decision (RAG is not implemented).
 - [Install / upgrade / uninstall / troubleshooting](docs/operations.md).
-- [Public redaction skeleton](docs/public-skeleton.md): shareable public description.
-- [Sonar MCP read-only candidate config](docs/sonar-mcp-candidate.md): retired, not enabled.
-- [Codex MCP config redaction snapshot](docs/mcp-config-snapshot-20260809.md): snapshot of the `mcp_servers` structure from 2026-08-09.
-- Architecture choices: see [ADR-0001](docs/decisions/0001-local-read-only-stdio.md) and [ADR-0002](docs/decisions/0002-additive-retrieval-and-board-interface.md).
+- Architecture choice: [ADR-0001](docs/decisions/0001-local-read-only-stdio.md).
 
 ## Quick start
 
