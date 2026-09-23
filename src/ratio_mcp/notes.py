@@ -181,7 +181,7 @@ class NoteRepository:
                 normalized = unquote(link).replace("\\", "/").split("#", 1)[0]
                 if not normalized.startswith("RUNBOOK/"):
                     continue
-                relative = normalized if normalized.casefold().endswith(".md") else f"{normalized}.md"
+                relative = (\n                    normalized\n                    if normalized.casefold().endswith(".md")\n                    else f"{normalized}.md"\n                )
                 try:
                     target = self._load_relative(relative)
                 except ValueError:
