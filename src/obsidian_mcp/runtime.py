@@ -4,8 +4,8 @@ import json
 import subprocess
 from datetime import datetime
 
-from ratio_mcp.config import Settings
-from ratio_mcp.models import RuntimeItem, RuntimeStatusResponse
+from obsidian_mcp.config import Settings
+from obsidian_mcp.models import RuntimeItem, RuntimeStatusResponse
 
 
 class RuntimeStatusService:

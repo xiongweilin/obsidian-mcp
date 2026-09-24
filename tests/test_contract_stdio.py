@@ -1,6 +1,6 @@
 """Wire-level MCP contract tests driven by a standard-library JSON-RPC client.
 
-These tests spawn the real ``uv run ratio-mcp`` server as a subprocess and speak
+These tests spawn the real ``uv run obsidian-mcp`` server as a subprocess and speak
 newline-delimited JSON-RPC over stdio with no ``mcp`` SDK on the client side.
 They cover tools/list, one success path per tool, privacy redaction, and the
 invalid-argument / privacy-denial error paths.

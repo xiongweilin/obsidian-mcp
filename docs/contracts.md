@@ -1,6 +1,6 @@
 # 工具契约（contracts）
 
-本文件定义 ratio-mcp 0.3 的四个只读 MCP 工具。ratio 已不再拥有 authoritative task-state，因此 0.3 移除了旧的 `read_action_board`；当前 Responsibility / Work 应回 AIOS 的权威 owner，而不是从 Markdown 看板推断。
+本文件定义 obsidian-mcp 0.3 的四个只读 MCP 工具。ratio 已不再拥有 authoritative task-state，因此 0.3 移除了旧的 `read_action_board`；当前 Responsibility / Work 应回 AIOS 的权威 owner，而不是从 Markdown 看板推断。
 
 ## 通用约定
 

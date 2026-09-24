@@ -5,9 +5,9 @@ from pathlib import Path
 
 import pytest
 
-from ratio_mcp.notes import NoteRepository
+from obsidian_mcp.notes import NoteRepository
 
-_REAL_VAULT = Path(r"D:\agent\ratio")
+_REAL_VAULT = Path(r"D:\agent\obsidian")
 
 
 @pytest.fixture
@@ -62,17 +62,17 @@ def test_real_vault_readonly_subset_baselines() -> None:
     repository = NoteRepository(_REAL_VAULT)
 
     started = time.perf_counter()
-    board = repository.read_action_board()
-    board_ms = (time.perf_counter() - started) * 1000
+    home = repository.read_section("README.md")
+    home_ms = (time.perf_counter() - started) * 1000
 
     started = time.perf_counter()
-    router = repository.read_section("元模型/个人平台总览.md")
+    router = repository.read_section("RUNBOOK/项目与仓库索引.md")
     router_ms = (time.perf_counter() - started) * 1000
 
     search = repository.search("环境运维", scope="runbook", limit=5)
 
-    assert board.total_items >= 1
-    assert router.path == "元模型/个人平台总览.md"
+    assert home.path == "README.md"
+    assert router.path == "RUNBOOK/项目与仓库索引.md"
     assert search.returned >= 1
-    assert board_ms < 200, f"action board read took {board_ms:.0f}ms (budget 200ms)"
+    assert home_ms < 200, f"home README read took {home_ms:.0f}ms (budget 200ms)"
     assert router_ms < 200, f"router read took {router_ms:.0f}ms (budget 200ms)"

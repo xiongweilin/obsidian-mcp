@@ -7,16 +7,16 @@ from mcp.server import MCPServer
 from mcp.types import ToolAnnotations
 from pydantic import Field
 
-from ratio_mcp import __version__
-from ratio_mcp.config import Settings
-from ratio_mcp.models import (
+from obsidian_mcp import __version__
+from obsidian_mcp.config import Settings
+from obsidian_mcp.models import (
     RunbookResponse,
     RuntimeStatusResponse,
     SearchResponse,
     SectionResponse,
 )
-from ratio_mcp.notes import NoteRepository, SearchScope
-from ratio_mcp.runtime import RuntimeStatusService
+from obsidian_mcp.notes import NoteRepository, SearchScope
+from obsidian_mcp.runtime import RuntimeStatusService
 
 _INSTRUCTIONS = (
     "Use find_runbook before operational work to locate the single relevant RUNBOOK. "

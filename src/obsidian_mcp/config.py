@@ -25,21 +25,21 @@ class Settings:
         # Environment overrides exist so tests and CI can point the server at a
         # fixture vault without editing source. Values are paths or integers,
         # never secrets; absent variables keep the platform defaults.
-        vault_root = Path(os.environ.get("RATIO_MCP_VAULT_ROOT", r"D:\agent\ratio"))
-        timeout_raw = os.environ.get("RATIO_MCP_COMMAND_TIMEOUT_SECONDS")
+        vault_root = Path(os.environ.get("OBSIDIAN_MCP_VAULT_ROOT", r"D:\agent\obsidian"))
+        timeout_raw = os.environ.get("OBSIDIAN_MCP_COMMAND_TIMEOUT_SECONDS")
         timeout = int(timeout_raw) if timeout_raw else 20
         return cls(
             vault_root=vault_root,
             windows_status_script=Path(
-                os.environ.get("RATIO_MCP_WINDOWS_STATUS_SCRIPT")
+                os.environ.get("OBSIDIAN_MCP_WINDOWS_STATUS_SCRIPT")
                 or (project_root / "scripts" / "windows_services.ps1")
             ),
             cloud_status_script=Path(
-                os.environ.get("RATIO_MCP_CLOUD_STATUS_SCRIPT")
+                os.environ.get("OBSIDIAN_MCP_CLOUD_STATUS_SCRIPT")
                 or (project_root / "scripts" / "cloud_status.ps1")
             ),
             ssh_wrapper=Path(
-                os.environ.get("RATIO_MCP_SSH_WRAPPER")
+                os.environ.get("OBSIDIAN_MCP_SSH_WRAPPER")
                 or home / ".local" / "bin" / "Invoke-RatioSsh.ps1"
             ),
             powershell_exe=shutil.which("pwsh") or "pwsh",

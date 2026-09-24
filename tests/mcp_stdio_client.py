@@ -44,7 +44,7 @@ def process_alive(pid: int) -> bool:
 
 
 class StdioMCPClient:
-    """Spawn ``uv run ratio-mcp`` and drive it with newline-delimited JSON-RPC."""
+    """Spawn ``uv run obsidian-mcp`` and drive it with newline-delimited JSON-RPC."""
 
     def __init__(
         self,
@@ -68,7 +68,7 @@ class StdioMCPClient:
         extra_env: Mapping[str, str] | None = None,
         timeout: float = 45.0,
     ) -> StdioMCPClient:
-        """Start one ``uv run ratio-mcp`` server for the given repository."""
+        """Start one ``uv run obsidian-mcp`` server for the given repository."""
 
         uv = shutil.which("uv")
         if not uv:
@@ -76,7 +76,7 @@ class StdioMCPClient:
         # --no-sync: the venv is already synced, and re-syncing would rebuild
         # the console script, which live MCP sessions lock on Windows. The
         # editable install already points at src/, so the current code runs.
-        command = [uv, "run", "--no-sync", "--directory", str(repo), "ratio-mcp"]
+        command = [uv, "run", "--no-sync", "--directory", str(repo), "obsidian-mcp"]
         env = os.environ.copy()
         if extra_env:
             env.update(extra_env)
@@ -162,7 +162,7 @@ class StdioMCPClient:
             {
                 "protocolVersion": PROTOCOL_VERSION,
                 "capabilities": {},
-                "clientInfo": {"name": "ratio-mcp-stdlib-client", "version": "0.1.0"},
+                "clientInfo": {"name": "obsidian-mcp-stdlib-client", "version": "0.1.0"},
             },
             timeout=self._ready_timeout,
         )
@@ -213,9 +213,9 @@ class StdioMCPClient:
 
 
 def spawn_with_temp_vault(repo: Path, vault: Path, **kwargs: Any) -> StdioMCPClient:
-    """Spawn the server pointed at a fixture vault via ``RATIO_MCP_VAULT_ROOT``."""
+    """Spawn the server pointed at a fixture vault via ``OBSIDIAN_MCP_VAULT_ROOT``."""
 
-    return StdioMCPClient.spawn(repo, extra_env={"RATIO_MCP_VAULT_ROOT": str(vault)}, **kwargs)
+    return StdioMCPClient.spawn(repo, extra_env={"OBSIDIAN_MCP_VAULT_ROOT": str(vault)}, **kwargs)
 
 
 def require_uv(repo: Path) -> str:

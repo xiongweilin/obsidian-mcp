@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from ratio_mcp.notes import NoteRepository
+from obsidian_mcp.notes import NoteRepository
 
 
 def test_search_matches_title(rich_vault: Path) -> None:

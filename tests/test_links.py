@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ratio_mcp.notes import NoteRepository
+from obsidian_mcp.notes import NoteRepository
 
 
 def test_find_runbook_skips_broken_router_links(rich_vault: Path) -> None:

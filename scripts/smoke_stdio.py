@@ -9,7 +9,7 @@ from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-from ratio_mcp.config import Settings
+from obsidian_mcp.config import Settings
 
 
 def _ensure_vault() -> None:
@@ -19,11 +19,11 @@ def _ensure_vault() -> None:
     no vault get a disposable fixture so the stdio smoke stays meaningful.
     """
 
-    if os.environ.get("RATIO_MCP_VAULT_ROOT"):
+    if os.environ.get("OBSIDIAN_MCP_VAULT_ROOT"):
         return
     if Settings.defaults().vault_root.is_dir():
         return
-    vault = Path(tempfile.mkdtemp(prefix="ratio-mcp-smoke-vault-"))
+    vault = Path(tempfile.mkdtemp(prefix="obsidian-mcp-smoke-vault-"))
     runbook = vault / "RUNBOOK"
     runbook.mkdir()
     (vault / "README.md").write_text(
@@ -40,7 +40,7 @@ def _ensure_vault() -> None:
         "---\n# 环境运维手册\n\n## 检查\n\n先看环境状态。\n",
         encoding="utf-8",
     )
-    os.environ["RATIO_MCP_VAULT_ROOT"] = str(vault)
+    os.environ["OBSIDIAN_MCP_VAULT_ROOT"] = str(vault)
 
 
 async def smoke() -> None:
@@ -48,9 +48,9 @@ async def smoke() -> None:
     project = Path(__file__).resolve().parents[1]
     parameters = StdioServerParameters(
         command=sys.executable,
-        args=["-m", "ratio_mcp.server"],
+        args=["-m", "obsidian_mcp.server"],
         cwd=str(project),
-        env={**os.environ},  # 显式继承环境，确保 RATIO_MCP_VAULT_ROOT 传给 server 子进程
+        env={**os.environ},  # 显式继承环境，确保 OBSIDIAN_MCP_VAULT_ROOT 传给 server 子进程
     )
     async with (
         stdio_client(parameters) as (read_stream, write_stream),

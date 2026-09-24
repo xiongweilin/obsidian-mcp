@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from ratio_mcp.config import Settings
-from ratio_mcp.runtime import RuntimeStatusService
+from obsidian_mcp.config import Settings
+from obsidian_mcp.runtime import RuntimeStatusService
 
 
 def main() -> None:

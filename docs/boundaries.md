@@ -2,7 +2,7 @@
 
 ## 项目职责
 
-`ratio-mcp` 是面向个人 Obsidian 知识库 `D:\agent\ratio` 的**只读 MCP 服务**。它提供两类能力：
+`obsidian-mcp` 是面向个人 Obsidian 知识库 `D:\agent\obsidian` 的**只读 MCP 服务**。它提供两类能力：
 
 1. **文档证据**：在知识库内按标题、标签、链接、路径、frontmatter 与正文做确定性检索，读取单个 Markdown 文件或标题小节。
 2. **实时证据**：查询当前 Windows 服务、本机 Docker 与个人云端的 systemd/Docker 状态，结果带 `is_live=true`。
@@ -26,7 +26,7 @@
 
 ## 路径允许列表
 
-唯一可读根：`D:\agent\ratio`（配置在 `src/ratio_mcp/config.py`，可用 `Settings` 覆盖以指向测试 vault）。
+唯一可读根：`D:\agent\obsidian`（配置在 `src/obsidian_mcp/config.py`，可用 `Settings` 覆盖以指向测试 vault）。
 
 - 只读根目录及其所有子目录下的 `*.md` 文件；
 - 路径必须相对、位于根目录内、扩展名为 `.md`，长度不超过 260 字符；
@@ -49,7 +49,7 @@
 | vault 内 `网络代理备份/` | v2rayN 配置与数据库备份，含代理服务器凭据 |
 | vault 内 `.sync_*.db*` | Obsidian 同步数据库 |
 | vault 内 `Desktop.ini`、`个人平台.png`、`scripts/*.ps1` 等非 Markdown 文件 | 与检索无关 |
-| `D:\agent\ratio\` 之外的任何路径 | 越界 |
+| `D:\agent\obsidian\` 之外的任何路径 | 越界 |
 
 输出前还会对常见凭据形式做正则遮蔽（见 `docs/contracts.md` 的"返回前遮蔽"）。
 

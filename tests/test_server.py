@@ -5,8 +5,8 @@ from pathlib import Path
 import pytest
 from mcp import Client
 
-from ratio_mcp.config import Settings
-from ratio_mcp.server import create_server
+from obsidian_mcp.config import Settings
+from obsidian_mcp.server import create_server
 
 
 @pytest.mark.anyio

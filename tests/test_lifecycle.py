@@ -1,6 +1,6 @@
 """Real-subprocess lifecycle tests for the ratio MCP server.
 
-These tests spawn actual ``uv run ratio-mcp`` processes (the same launch shape
+These tests spawn actual ``uv run obsidian-mcp`` processes (the same launch shape
 Codex uses) and verify process structure under concurrent connections, clean
 shutdown after clients close, and reaping when a client dies abnormally. Only
 processes spawned by the test are inspected; unrelated sessions are never
@@ -158,7 +158,7 @@ def test_three_concurrent_connections_have_isolated_server_processes(
         ratio_descendants = {
             pid: cmdline
             for pid, cmdline in descendants.items()
-            if "ratio" in cmdline.casefold() or "ratio_mcp" in cmdline.casefold()
+            if "obsidian-mcp" in cmdline.casefold() or "obsidian_mcp" in cmdline.casefold()
         }
         assert len(ratio_descendants) >= CONNECTIONS, (
             f"expected at least {CONNECTIONS} server processes, got {len(ratio_descendants)}"
@@ -277,7 +277,7 @@ def test_client_crash_leaves_no_orphan_server_processes(repo_root: Path) -> None
 
 
 def test_subprocess_timeout_is_bounded(repo_root: Path) -> None:
-    from ratio_mcp.runtime import _run
+    from obsidian_mcp.runtime import _run
 
     started = time.monotonic()
     result = _run([sys.executable, "-c", "import time; time.sleep(10)"], timeout=1)
@@ -289,8 +289,8 @@ def test_subprocess_timeout_is_bounded(repo_root: Path) -> None:
 
 @pytest.mark.windows_only
 def test_runtime_query_reports_timeout_as_warning(repo_root: Path, tmp_path: Path) -> None:
-    from ratio_mcp.config import Settings
-    from ratio_mcp.runtime import RuntimeStatusService
+    from obsidian_mcp.config import Settings
+    from obsidian_mcp.runtime import RuntimeStatusService
 
     slow_script = tmp_path / "slow.ps1"
     slow_script.write_text("Start-Sleep -Seconds 10\n", encoding="utf-8")

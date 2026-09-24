@@ -1,4 +1,4 @@
-from ratio_mcp.privacy import redact_sensitive_text
+from obsidian_mcp.privacy import redact_sensitive_text
 
 
 def test_redacts_multiple_secret_forms() -> None:

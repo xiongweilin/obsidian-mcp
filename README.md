@@ -1,7 +1,9 @@
-# ratio-mcp
+# obsidian-mcp
 
-[![CI](https://github.com/xiongweilin/ratio-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/xiongweilin/ratio-mcp/actions/workflows/ci.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=metratio_ratio-mcp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=metratio_ratio-mcp) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=metratio_ratio-mcp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=metratio_ratio-mcp) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](pyproject.toml)
-`ratio-mcp` is a read-only MCP service for the personal `D:\agent\ratio` knowledge base and the live runtime environment. It builds no vector store, copies no knowledge base, and lets the Agent run no arbitrary commands; Codex locates documents, reads sections, and queries current Windows, Docker, and cloud state through four narrow interfaces.
+[![SonarCloud Analysis](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/sonarcloud.yml/badge.svg?branch=main)](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/sonarcloud.yml)
+
+[![CI](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/ci.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=metratio_obsidian-mcp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=metratio_obsidian-mcp) [![SonarCloud Analysis](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/sonarcloud.yml/badge.svg?branch=main)](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/sonarcloud.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](pyproject.toml)
+`obsidian-mcp` is a read-only MCP service for the personal `D:\agent\obsidian` knowledge base and the live runtime environment. It builds no vector store, copies no knowledge base, and lets the Agent run no arbitrary commands; Codex locates documents, reads sections, and queries current Windows, Docker, and cloud state through four narrow interfaces.
 
 ## Tool contract
 
@@ -25,9 +27,9 @@ All list interfaces have a result cap; paths are confined to the knowledge base 
 ## Quick start
 
 ```powershell
-cd D:\agent\ratio-mcp
+cd D:\agent\obsidian-mcp
 uv sync
-uv run ratio-mcp
+uv run obsidian-mcp
 ```
 
 The last command starts the STDIO service and waits for an MCP host to connect; the absence of a prompt in the terminal is expected behavior.
@@ -50,14 +52,14 @@ The test suite also includes two kinds of real-subprocess tests (run automatical
 
 The `tools/list` schema snapshot lives in `tests/schema-snapshot.json`; when the schema changes, `test_schema_snapshot.py` fails and you must regenerate and commit it with `uv run python scripts/update_schema_snapshot.py` after manual confirmation.
 
-> When a resident MCP session exists on this machine, `uv sync` can fail because `ratio-mcp.exe` is locked (see `docs/operations.md`); for local verification use `uv run --no-sync ...`, and CI is unaffected on a fresh runner.
+> When a resident MCP session exists on this machine, `uv sync` can fail because `obsidian-mcp.exe` is locked (see `docs/operations.md`); for local verification use `uv run --no-sync ...`, and CI is unaffected on a fresh runner.
 
 ## Codex integration
 
 Codex launches this project through the STDIO entry in the global `~/.codex/config.toml`; the CLI, IDE extension, and desktop app share that config on the same host. Current install command:
 
 ```powershell
-codex mcp add ratio -- uv run --directory D:\agent\ratio-mcp ratio-mcp
+codex mcp add ratio -- uv run --directory D:\agent\obsidian-mcp obsidian-mcp
 ```
 
 View and roll back:
@@ -71,7 +73,7 @@ After changing the MCP config, restart the Codex client or extension. The projec
 
 ## Runtime boundaries
 
-- Default knowledge base: `D:\agent\ratio`.
+- Default knowledge base: `D:\agent\obsidian`.
 - Default cloud entry: `~/.local/bin/Invoke-RatioSsh.ps1`.
 - Does not read non-Markdown files, does not return service executable paths or arguments, does not print environment variables.
 - `operational-snapshot` in documents is only for navigation and drift clues; "is it currently running" must be answered with `query_runtime_status`.

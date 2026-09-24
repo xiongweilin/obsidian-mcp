@@ -6,13 +6,13 @@ from pathlib import Path
 from typing import Literal
 from urllib.parse import unquote
 
-from ratio_mcp.models import (
+from obsidian_mcp.models import (
     RunbookResponse,
     SearchHit,
     SearchResponse,
     SectionResponse,
 )
-from ratio_mcp.privacy import redact_sensitive_text
+from obsidian_mcp.privacy import redact_sensitive_text
 
 SearchScope = Literal["all", "runbook", "operational", "conceptual"]
 ROUTER_PATH = "README.md"

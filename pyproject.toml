@@ -1,5 +1,5 @@
 [project]
-name = "ratio-mcp"
+name = "obsidian-mcp"
 version = "0.3.0"
 description = "Read-only MCP server for the ratio knowledge vault and live environment status."
 readme = "README.md"
@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
-ratio-mcp = "ratio_mcp.server:main"
+obsidian-mcp = "obsidian_mcp.server:main"
 
 [dependency-groups]
 dev = [

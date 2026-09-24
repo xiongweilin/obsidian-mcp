@@ -1,6 +1,6 @@
 """Standalone helper for the client-crash lifecycle test.
 
-Simulates a real MCP host: spawns ``uv run ratio-mcp`` as its own child
+Simulates a real MCP host: spawns ``uv run obsidian-mcp`` as its own child
 process, completes the initialize handshake, reports the server PID on stderr,
 then idles while holding the stdio connection. Killing this helper hard is
 equivalent to a Codex task dying without a clean shutdown; the test asserts the
@@ -19,7 +19,7 @@ def main() -> None:
     uv = sys.argv[1]
     repo = sys.argv[2]
     server = subprocess.Popen(
-        [uv, "run", "--no-sync", "--directory", repo, "ratio-mcp"],
+        [uv, "run", "--no-sync", "--directory", repo, "obsidian-mcp"],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
