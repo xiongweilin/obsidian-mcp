@@ -10,7 +10,7 @@ Accepted
 
 ## 背景
 
-`D:\download\ratio` 只有数十个结构化 Markdown 文件，却包含会变化的 Windows、Docker 和云端事实。Agent 需要可重复定位事实源，并在必要时查询真实管理平面；固定向量索引会重复现有 frontmatter、Wikilink 和目录结构，也容易把历史快照误当当前事实。
+`D:\agent\obsidian` 只有数十个结构化 Markdown 文件，却包含会变化的 Windows、Docker 和云端事实。Agent 需要可重复定位事实源，并在必要时查询真实管理平面；固定向量索引会重复现有 frontmatter、Wikilink 和目录结构，也容易把历史快照误当当前事实。
 
 ## 决策
 
