@@ -1,6 +1,6 @@
 # 工具契约（contracts）
 
-本文件定义 obsidian-mcp 0.3 的四个只读 MCP 工具。ratio 已不再拥有 authoritative task-state，因此 0.3 移除了旧的 `read_action_board`；当前 Responsibility / Work 应回 AIOS 的权威 owner，而不是从 Markdown 看板推断。
+本文件定义 obsidian-mcp 0.3 的四个只读 MCP 工具。知识库文档只提供文档证据；Responsibility / Work 等运行状态必须从其权威运行时 owner 获取，不能从 Markdown 推断。
 
 ## 通用约定
 
@@ -12,7 +12,7 @@
 
 ## 1. find_runbook
 
-从 ratio 根 `README.md` 的 RUNBOOK 链接与 `RUNBOOK/` 全文中定位相关运行手册。README 是 locator/router，不复制项目 current truth。
+从 vault 根 `README.md` 的 RUNBOOK 链接与 `RUNBOOK/` 全文中定位相关运行手册。README 是 locator/router，不复制项目 current truth。
 
 输入：`topic` 1–200 字符；`limit` 1–10。  
 返回：`RunbookResponse`，`router_path="README.md"`。
@@ -41,7 +41,3 @@
 
 `scope`：`windows_services` / `local_docker` / `cloud`。  
 运行失败以 warnings 返回，不回退到旧文档冒充实时状态。
-
-## 版本边界
-
-0.3 的破坏性变化只有一项：删除 `read_action_board`。原因是 ratio 已移除 `个人/当前行动看板.md` 的 authoritative task-state 角色。调用方需要当前工作/责任状态时，应查询 Agency Console / World Runtime 等真正 owner。
