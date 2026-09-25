@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/update_schema_snapshot.py",
   "server_info": {
-    "name": "ratio",
+    "name": "obsidian",
     "version": "0.3.0"
   },
   "tools_list": {
@@ -94,7 +94,7 @@
                   "type": "integer"
                 },
                 "path": {
-                  "description": "Path relative to the ratio vault.",
+                  "description": "Path relative to the Obsidian vault.",
                   "title": "Path",
                   "type": "string"
                 },
@@ -166,7 +166,7 @@
           "title": "RunbookResponse",
           "type": "object"
         },
-        "title": "Find the relevant ratio runbook"
+        "title": "Find the relevant Obsidian runbook"
       },
       {
         "annotations": {
@@ -267,7 +267,7 @@
                   "type": "integer"
                 },
                 "path": {
-                  "description": "Path relative to the ratio vault.",
+                  "description": "Path relative to the Obsidian vault.",
                   "title": "Path",
                   "type": "string"
                 },
@@ -344,14 +344,14 @@
           "title": "SearchResponse",
           "type": "object"
         },
-        "title": "Search ratio Markdown notes"
+        "title": "Search Obsidian Markdown notes"
       },
       {
         "annotations": {
           "openWorldHint": false,
           "readOnlyHint": true
         },
-        "description": "Read a bounded document or exact heading section from inside the ratio vault.",
+        "description": "Read a bounded document or exact heading section from inside the Obsidian vault.",
         "inputSchema": {
           "properties": {
             "heading": {
@@ -454,7 +454,7 @@
           "title": "SectionResponse",
           "type": "object"
         },
-        "title": "Read one ratio Markdown section"
+        "title": "Read one Obsidian Markdown section"
       },
       {
         "annotations": {
@@ -582,7 +582,7 @@
           "title": "RuntimeStatusResponse",
           "type": "object"
         },
-        "title": "Query current ratio runtime status"
+        "title": "Query current environment runtime status"
       }
     ]
   }
