@@ -201,11 +201,11 @@ def test_server_stays_healthy_after_errors(server: StdioMCPClient) -> None:
     assert result["structuredContent"]["returned"] >= 1
 
 
-def test_initialize_handshake_reports_ratio_server(repo_root: Path, contract_vault: Path) -> None:
+def test_initialize_handshake_reports_obsidian_server(repo_root: Path, contract_vault: Path) -> None:
     client = spawn_with_temp_vault(repo_root, contract_vault)
     try:
         info = client.initialize()
-        assert info["serverInfo"]["name"] == "ratio"
+        assert info["serverInfo"]["name"] == "obsidian"
         assert info["protocolVersion"]
         assert "tools" in info.get("capabilities", {})
     finally:
