@@ -32,17 +32,17 @@ uv run python scripts\smoke_runtime.py
 
 ## Codex 本地 MCP 配置
 
-Codex 使用全局 `~/.codex/config.toml` 的 STDIO 条目启动本项目。当前机器上 `[mcp_servers.ratio]` 已配置（含 `command` 与 `args` 键）。如需在另一台机器配置：
+Codex 使用全局 `~/.codex/config.toml` 的 STDIO 条目启动本项目。当前机器上 `[mcp_servers.obsidian]` 已配置（含 `command` 与 `args` 键）。如需在另一台机器配置：
 
 ```powershell
-codex mcp add ratio -- uv run --directory D:\agent\obsidian-mcp obsidian-mcp
+codex mcp add obsidian -- uv run --directory D:\agent\obsidian-mcp obsidian-mcp
 ```
 
 查看与回滚：
 
 ```powershell
-codex mcp get ratio
-codex mcp remove ratio
+codex mcp get obsidian
+codex mcp remove obsidian
 ```
 
 > `~/.codex/config.toml` 由运行时管理、可能含密钥；**不要手工编辑其中的密钥值**，也不要输出其值。修改 MCP 配置后需重启 Codex 客户端或扩展。
@@ -62,7 +62,7 @@ uv run pytest
 ## 卸载
 
 ```powershell
-codex mcp remove ratio
+codex mcp remove obsidian
 ```
 
 然后删除项目目录（`D:\agent\obsidian-mcp`，含 `.venv`）。卸载不影响 vault 内容，本项目从不写 vault。
