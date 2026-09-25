@@ -40,7 +40,7 @@ class Settings:
             ),
             ssh_wrapper=Path(
                 os.environ.get("OBSIDIAN_MCP_SSH_WRAPPER")
-                or home / ".local" / "bin" / "Invoke-RatioSsh.ps1"
+                or home / ".local" / "bin" / "Invoke-MetratioSsh.ps1"
             ),
             powershell_exe=shutil.which("pwsh") or "pwsh",
             docker_exe=shutil.which("docker"),
