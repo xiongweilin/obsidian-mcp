@@ -34,13 +34,13 @@ def create_server(settings: Settings | None = None) -> MCPServer:
     notes = NoteRepository(resolved_settings.vault_root)
     runtime = RuntimeStatusService(resolved_settings)
     server = MCPServer(
-        "ratio",
+        "obsidian",
         version=__version__,
         instructions=_INSTRUCTIONS,
         log_level="WARNING",
     )
 
-    @server.tool(title="Find the relevant ratio runbook", annotations=_READ_ONLY)
+    @server.tool(title="Find the relevant Obsidian runbook", annotations=_READ_ONLY)
     async def find_runbook(
         topic: Annotated[
             str,
@@ -52,7 +52,7 @@ def create_server(settings: Settings | None = None) -> MCPServer:
 
         return await asyncio.to_thread(notes.find_runbooks, topic, limit)
 
-    @server.tool(title="Search ratio Markdown notes", annotations=_READ_ONLY)
+    @server.tool(title="Search Obsidian Markdown notes", annotations=_READ_ONLY)
     async def search_notes(
         query: Annotated[
             str,
@@ -65,7 +65,7 @@ def create_server(settings: Settings | None = None) -> MCPServer:
 
         return await asyncio.to_thread(notes.search, query, scope, limit)
 
-    @server.tool(title="Read one ratio Markdown section", annotations=_READ_ONLY)
+    @server.tool(title="Read one Obsidian Markdown section", annotations=_READ_ONLY)
     async def read_section(
         path: Annotated[
             str,
@@ -81,11 +81,11 @@ def create_server(settings: Settings | None = None) -> MCPServer:
         ] = None,
         max_chars: Annotated[int, Field(ge=500, le=20_000)] = 12_000,
     ) -> SectionResponse:
-        """Read a bounded document or exact heading section from inside the ratio vault."""
+        """Read a bounded document or exact heading section from inside the Obsidian vault."""
 
         return await asyncio.to_thread(notes.read_section, path, heading, max_chars)
 
-    @server.tool(title="Query current ratio runtime status", annotations=_READ_ONLY)
+    @server.tool(title="Query current environment runtime status", annotations=_READ_ONLY)
     async def query_runtime_status(
         scope: Literal["windows_services", "local_docker", "cloud"],
         query: Annotated[
