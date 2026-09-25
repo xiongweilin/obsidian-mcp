@@ -1,7 +1,7 @@
 [project]
 name = "obsidian-mcp"
 version = "0.3.0"
-description = "Read-only MCP server for the ratio knowledge vault and live environment status."
+description = "Read-only MCP server for the Obsidian knowledge vault and live environment status."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
