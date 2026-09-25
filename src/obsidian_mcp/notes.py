@@ -42,7 +42,7 @@ class NoteChunk:
 
 
 class NoteRepository:
-    """Deterministic, non-persistent Markdown retrieval for the ratio vault."""
+    """Deterministic, non-persistent Markdown retrieval for the Obsidian vault."""
 
     def __init__(self, root: Path) -> None:
         self.root = root.resolve()
@@ -134,7 +134,7 @@ class NoteRepository:
 
     def _documents(self, scope: SearchScope) -> list[NoteDocument]:
         if not self.root.is_dir():
-            raise ValueError("The configured ratio vault root is unavailable.")
+            raise ValueError("The configured Obsidian vault root is unavailable.")
         documents = []
         for path in sorted(self.root.rglob("*.md"), key=lambda item: str(item).casefold()):
             relative = path.relative_to(self.root)
@@ -155,12 +155,12 @@ class NoteRepository:
             raise ValueError("A Markdown path is required.")
         relative = Path(supplied_path.replace("\\", "/"))
         if relative.is_absolute() or relative.suffix.casefold() != ".md":
-            raise ValueError("Only relative Markdown paths inside the ratio vault are allowed.")
+            raise ValueError("Only relative Markdown paths inside the Obsidian vault are allowed.")
         if len(relative.as_posix()) > 260:
             raise ValueError("The requested path exceeds the 260 character limit.")
         candidate = (self.root / relative).resolve()
         if not candidate.is_relative_to(self.root):
-            raise ValueError("The requested path escapes the ratio vault.")
+            raise ValueError("The requested path escapes the Obsidian vault.")
         if not candidate.is_file():
             raise ValueError("The requested Markdown document does not exist.")
         if any(part in _EXCLUDED_PARTS for part in candidate.relative_to(self.root).parts):
