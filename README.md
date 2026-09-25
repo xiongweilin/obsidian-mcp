@@ -59,14 +59,14 @@ The `tools/list` schema snapshot lives in `tests/schema-snapshot.json`; when the
 Codex launches this project through the STDIO entry in the global `~/.codex/config.toml`; the CLI, IDE extension, and desktop app share that config on the same host. Current install command:
 
 ```powershell
-codex mcp add ratio -- uv run --directory D:\agent\obsidian-mcp obsidian-mcp
+codex mcp add obsidian -- uv run --directory D:\agent\obsidian-mcp obsidian-mcp
 ```
 
 View and roll back:
 
 ```powershell
-codex mcp get ratio
-codex mcp remove ratio
+codex mcp get obsidian
+codex mcp remove obsidian
 ```
 
 After changing the MCP config, restart the Codex client or extension. The project itself listens on no port; Codex starts the process on demand.
@@ -74,7 +74,7 @@ After changing the MCP config, restart the Codex client or extension. The projec
 ## Runtime boundaries
 
 - Default knowledge base: `D:\agent\obsidian`.
-- Default cloud entry: `~/.local/bin/Invoke-RatioSsh.ps1`.
+- Default cloud entry: `~/.local/bin/Invoke-MetratioSsh.ps1`.
 - Does not read non-Markdown files, does not return service executable paths or arguments, does not print environment variables.
 - `operational-snapshot` in documents is only for navigation and drift clues; "is it currently running" must be answered with `query_runtime_status`.
 - The MCP persists no retrieved content, runtime results, or log data; nothing new is retained after the process exits.
