@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 
 class SearchHit(BaseModel):
-    path: str = Field(description="Path relative to the ratio vault.")
+    path: str = Field(description="Path relative to the Obsidian vault.")
     title: str
     heading: str | None = None
     line_start: int = Field(ge=1)
