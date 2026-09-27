@@ -123,9 +123,9 @@ tags:
 """,
         encoding="utf-8",
     )
-    # Non-UTF-8 (GBK) file: must be tolerated, not crash the repository.
+    # 非 UTF-8（GBK）文件：必须能够容忍，不能让仓库扫描崩溃。
     (tmp_path / "编码测试.md").write_bytes("标题\n内容包含中文。\n".encode("gbk"))
-    # Abnormal Markdown: no headings, malformed heading syntax, lone hashes.
+    # 异常 Markdown：没有标题、标题语法错误、孤立的井号。
     (tmp_path / "异常笔记.md").write_text(
         "只有正文，没有标题。\n#无空格标题\n###\n#### 尾随空格  \n---\n", encoding="utf-8"
     )
