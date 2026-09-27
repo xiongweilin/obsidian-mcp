@@ -125,8 +125,8 @@ def test_search_notes_success_and_privacy_redaction(server: StdioMCPClient) -> N
     assert content["returned"] >= 1
     assert content["items"][0]["source_kind"] == "documentation"
 
-    # The fixture note contains `password: contract-secret-must-not-leak`; the
-    # wire response must never carry the raw value.
+    # fixture note 包含用于验证遮蔽的 password 赋值；
+    # wire response 绝不能携带原始值。
     serialized = json.dumps(content, ensure_ascii=False)
     assert "contract-secret-must-not-leak" not in serialized
 
@@ -148,8 +148,8 @@ def test_read_section_success(server: StdioMCPClient) -> None:
 def test_query_runtime_status_success_shape(server: StdioMCPClient) -> None:
     result = server.call_tool("query_runtime_status", {"scope": "windows_services", "limit": 5})
 
-    # The live query may legitimately return warnings (missing script, no pwsh,
-    # cloud unreachable), but it must never fail the call or fabricate results.
+    # 实时查询可能合法返回 warning（脚本缺失、没有 pwsh、
+    # 云端不可达），但不能让调用失败，也不能伪造结果。
     assert result["isError"] is False
     content = result["structuredContent"]
     assert content["scope"] == "windows_services"
@@ -239,13 +239,13 @@ def test_read_section_rejects_outside_vault(server: StdioMCPClient) -> None:
 
 
 def test_error_path_never_exposes_raw_secret(server: StdioMCPClient) -> None:
-    # The vault's own secret lives in a fixture note; even error paths must not
-    # echo raw credential values back over the wire.
+    # vault 的测试敏感值位于 fixture note 中；即使错误路径也不能
+    # 通过 wire 回显原始凭据值。
     result = server.call_tool("search_notes", {"query": "contract-secret"})
 
     serialized = json.dumps(result, ensure_ascii=False)
     assert "contract-secret-must-not-leak" not in serialized
     if not result["isError"]:
-        # The fixture note holds a `password: ...` assignment; the redacted
-        # marker must have replaced the value on the wire.
+        # fixture note 含有 `password: ...` 赋值；wire 上必须已经
+        # 用遮蔽标记替换其值。
         assert "[REDACTED]" in serialized
