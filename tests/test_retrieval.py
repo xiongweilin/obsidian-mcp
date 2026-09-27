@@ -16,8 +16,8 @@ def test_search_matches_title(rich_vault: Path) -> None:
 def test_search_matches_yaml_list_tag(rich_vault: Path) -> None:
     result = NoteRepository(rich_vault).search("unique-tag-xyz", scope="all")
 
-    # The tag is the only signal, so every hit must be this file (per-chunk hits
-    # for the same document are expected and documented).
+    # tag 是唯一信号，因此每个命中都必须来自该文件（同一文档的
+    # 分块重复命中属于预期并已有说明）。
     assert len(result.items) >= 1
     assert {item.path for item in result.items} == {"领域模型/无标签词.md"}
 
@@ -50,7 +50,7 @@ def test_non_utf8_file_is_tolerated(rich_vault: Path) -> None:
 
     assert section.path == "编码测试.md"
     assert "\ufffd" in section.content or "中文" in section.content
-    assert result.returned >= 0  # the GBK file must never crash the scan
+    assert result.returned >= 0  # GBK 文件绝不能导致扫描崩溃
 
 
 def test_abnormal_markdown_is_tolerated(rich_vault: Path) -> None:
