@@ -153,8 +153,8 @@ def test_three_concurrent_connections_have_isolated_server_processes(
         descendants = _descendants(root_pids)
 
         assert len(clients) == CONNECTIONS
-        # Each connection must own at least one descendant whose command line
-        # names the ratio server (uv wrapper or python interpreter).
+        # 每个连接都必须至少拥有一个后代进程，其命令行
+        # 指向 ratio server（uv wrapper 或 Python interpreter）。
         ratio_descendants = {
             pid: cmdline
             for pid, cmdline in descendants.items()
@@ -163,13 +163,13 @@ def test_three_concurrent_connections_have_isolated_server_processes(
         assert len(ratio_descendants) >= CONNECTIONS, (
             f"expected at least {CONNECTIONS} server processes, got {len(ratio_descendants)}"
         )
-        # Every connection's tree is non-empty (uv wrapper + interpreter).
+        # 每个连接的进程树都非空（uv wrapper + interpreter）。
         assert len(descendants) >= CONNECTIONS * 2
     finally:
         for client in clients:
             client.close(wait_timeout=EXIT_TIMEOUT)
 
-    # After closing every client the whole test-owned tree must be gone.
+    # 关闭所有 client 后，测试拥有的整个进程树必须消失。
     assert _wait_until_gone(root_pids), "ratio MCP processes survived clean client close"
 
 
@@ -245,7 +245,7 @@ def test_client_crash_leaves_no_orphan_server_processes(repo_root: Path) -> None
         assert server_pid is not None, "helper did not report the server PID"
         assert process_alive(server_pid), "server should be up before the crash"
 
-        # Abnormal client exit: terminate the host without any clean shutdown.
+        # 模拟 client 异常退出：不做正常 shutdown，直接终止 host。
         if sys.platform == "win32":
             subprocess.run(
                 ["taskkill", "/F", "/PID", str(host.pid)],
@@ -256,7 +256,7 @@ def test_client_crash_leaves_no_orphan_server_processes(repo_root: Path) -> None
         else:
             host.kill()
     finally:
-        # Never leak the helper host, even when an earlier assertion fails.
+        # 即使前面的断言失败，也绝不能泄漏 helper host。
         if host.poll() is None:
             if sys.platform == "win32":
                 subprocess.run(
