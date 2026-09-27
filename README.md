@@ -1,8 +1,8 @@
 # obsidian-mcp
 
-[![SonarCloud Analysis](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/sonarcloud.yml/badge.svg?branch=main)](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/sonarcloud.yml)
+[![CI](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/ci.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=metratio_obsidian-mcp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=metratio_obsidian-mcp) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](pyproject.toml) [![Docs: EN / 中文](https://img.shields.io/badge/docs-EN%20%7C%20%E4%B8%AD%E6%96%87-blue.svg)](README.zh-CN.md)
 
-[![CI](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/ci.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=metratio_obsidian-mcp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=metratio_obsidian-mcp) [![SonarCloud Analysis](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/sonarcloud.yml/badge.svg?branch=main)](https://github.com/xiongweilin/obsidian-mcp/actions/workflows/sonarcloud.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](pyproject.toml)
+[English](README.md) | [简体中文](README.zh-CN.md)
 `obsidian-mcp` is a read-only MCP service for the personal `D:\agent\obsidian` knowledge base and the live runtime environment. It builds no vector store, copies no knowledge base, and lets the Agent run no arbitrary commands; Codex locates documents, reads sections, and queries current Windows, Docker, and cloud state through four narrow interfaces.
 
 ## Tool contract
