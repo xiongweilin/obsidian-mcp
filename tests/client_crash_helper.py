@@ -42,8 +42,8 @@ def main() -> None:
     try:
         server.stdin.write(json.dumps(request) + "\n")
         server.stdin.flush()
-        # Wait for the initialize response so the server is fully up before the
-        # test kills us.
+        # 等待 initialize 响应，确保服务完全启动后
+        # 测试再终止本进程。
         if server.stdout:
             for _ in range(60):
                 line = server.stdout.readline()
@@ -55,8 +55,8 @@ def main() -> None:
         print("READY", file=sys.stderr, flush=True)
     except (BrokenPipeError, OSError):
         pass
-    # Bounded idle so a leaked helper self-terminates even if a test fails
-    # before it can kill us (belt-and-suspenders on top of the test cleanup).
+    # 使用有界空闲时间，即使测试在终止本进程前失败，泄漏的 helper
+    # 也会自行退出，作为测试清理之外的额外保险。
     time.sleep(120)
 
 
