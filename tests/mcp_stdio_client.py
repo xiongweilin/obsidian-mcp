@@ -73,9 +73,9 @@ class StdioMCPClient:
         uv = shutil.which("uv")
         if not uv:
             raise MCPClientError("uv executable not found on PATH")
-        # --no-sync: the venv is already synced, and re-syncing would rebuild
-        # the console script, which live MCP sessions lock on Windows. The
-        # editable install already points at src/, so the current code runs.
+        # --no-sync：venv 已同步；再次同步会重建
+        # console script，而 Windows 上活跃的 MCP session 会锁定它。
+        # editable install 已指向 src/，因此可以直接运行当前代码。
         command = [uv, "run", "--no-sync", "--directory", str(repo), "obsidian-mcp"]
         env = os.environ.copy()
         if extra_env:
@@ -142,7 +142,7 @@ class StdioMCPClient:
                 if not isinstance(message, dict) or "jsonrpc" not in message:
                     raise MCPClientError(f"malformed MCP message: {line[:120]!r}")
                 if "id" not in message:
-                    # Server-originated notification (e.g. logging); record and continue.
+                    # 服务端发起的通知（例如日志）；记录后继续。
                     self.notifications.append(message)
                     continue
                 if message.get("id") != request_id:
