@@ -19,11 +19,11 @@
 
 ## 文档
 
-- [项目边界](docs/boundaries.zh-CN.md)：职责、只读边界、路径 allowlist 和禁止读取项。
-- [工具契约](docs/contracts.zh-CN.md)：四个工具的输入/输出、错误语义和长度限制。
-- [轻量索引与 RAG](docs/rag-vs-index.zh-CN.md)：权衡决策（未实现 RAG）。
-- [安装 / 升级 / 卸载 / 排障](docs/operations.zh-CN.md)。
-- 架构决策：[ADR-0001](docs/decisions/0001-local-read-only-stdio.zh-CN.md)。
+- [项目边界](docs/boundaries.md)：职责、只读边界、路径 allowlist 和禁止读取项。
+- [工具契约](docs/contracts.md)：四个工具的输入/输出、错误语义和长度限制。
+- [轻量索引与 RAG](docs/rag-vs-index.md)：权衡决策（未实现 RAG）。
+- [安装 / 升级 / 卸载 / 排障](docs/operations.md)。
+- 架构决策：[ADR-0001](docs/decisions/0001-local-read-only-stdio.md)。
 
 ## 快速开始
 
@@ -53,7 +53,7 @@ uv run python scripts\smoke_runtime.py
 
 `tools/list` schema snapshot 位于 `tests/schema-snapshot.json`。schema 发生变化时，`test_schema_snapshot.py` 会失败；人工确认后，需要运行 `uv run python scripts/update_schema_snapshot.py` 重新生成并提交 snapshot。
 
-> 当本机存在常驻 MCP session 时，`uv sync` 可能因为 `obsidian-mcp.exe` 被锁定而失败（见 `docs/operations.zh-CN.md`）；本地验证请使用 `uv run --no-sync ...`，全新 runner 上的 CI 不受影响。
+> 当本机存在常驻 MCP session 时，`uv sync` 可能因为 `obsidian-mcp.exe` 被锁定而失败（见 `docs/operations.md`）；本地验证请使用 `uv run --no-sync ...`，全新 runner 上的 CI 不受影响。
 
 ## Codex 集成
 
@@ -80,4 +80,4 @@ codex mcp remove obsidian
 - 文档中的 `operational-snapshot` 只用于导航和漂移线索；“当前是否正在运行”必须通过 `query_runtime_status` 回答。
 - MCP 不持久化检索内容、运行时结果或日志数据；进程退出后不会新增保留内容。
 
-架构选择见 [ADR-0001](docs/decisions/0001-local-read-only-stdio.zh-CN.md)。
+架构选择见 [ADR-0001](docs/decisions/0001-local-read-only-stdio.md)。
