@@ -22,9 +22,9 @@ class Settings:
     def defaults(cls) -> Settings:
         project_root = Path(__file__).resolve().parents[2]
         home = Path.home()
-        # Environment overrides exist so tests and CI can point the server at a
-        # fixture vault without editing source. Values are paths or integers,
-        # never secrets; absent variables keep the platform defaults.
+        # 环境变量覆盖使测试和 CI 可以把服务指向
+        # fixture vault，而无需修改源码。取值只包含路径或整数，
+        # 绝不包含敏感值；变量缺失时保留平台默认值。
         vault_root = Path(os.environ.get("OBSIDIAN_MCP_VAULT_ROOT", r"D:\agent\obsidian"))
         timeout_raw = os.environ.get("OBSIDIAN_MCP_COMMAND_TIMEOUT_SECONDS")
         timeout = int(timeout_raw) if timeout_raw else 20
