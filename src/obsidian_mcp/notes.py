@@ -143,8 +143,8 @@ class NoteRepository:
             try:
                 document = _load_document(self.root, path)
             except OSError:
-                # Unreadable files (permissions, locked handles) are skipped so one
-                # broken note cannot take the whole retrieval surface down.
+                # 跳过因权限或句柄锁定而无法读取的文件，避免单个
+                # 异常笔记拖垮整个检索表面。
                 continue
             if _in_scope(document, scope):
                 documents.append(document)
@@ -341,9 +341,9 @@ def _score_chunk(chunk: NoteChunk, query: str) -> int:
 
 
 def _snippet(text: str, query: str, width: int = 360) -> str:
-    # Redact before collapsing whitespace: the assignment regex is anchored to
-    # line starts, and a single-line compacted snippet would otherwise leak
-    # `password: value` forms that never begin the compacted string.
+    # 在折叠空白前先做遮蔽：赋值正则锚定在
+    # 行首；如果先压成单行，原本不位于压缩字符串行首的
+    # `password: value` 形式可能因此泄漏。
     redacted_text, _ = redact_sensitive_text(text)
     compact = re.sub(r"\s+", " ", redacted_text).strip()
     lower = compact.casefold()
