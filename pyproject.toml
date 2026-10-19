@@ -16,7 +16,7 @@ obsidian-mcp = "obsidian_mcp.server:main"
 dev = [
     "hypothesis>=6.168.3,<7",
     "pytest>=9,<10",
-    "pytest-cov>=6,<8",
+    "pytest-cov>=7.1.0,<8",
     "ruff>=0.16.9,<1",
 ]
 
