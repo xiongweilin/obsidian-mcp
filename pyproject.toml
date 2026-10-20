@@ -44,6 +44,6 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 branch = true
 
 [tool.coverage.report]
-# Ratchet: current CI-subset coverage is 81.83% (branch). Raise, never lower.
+# 棘轮：当前 CI 子集覆盖率为 81.83%（分支）。只能提高，不能降低。
 fail_under = 81
 show_missing = true

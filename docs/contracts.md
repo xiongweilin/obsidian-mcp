@@ -1,6 +1,6 @@
 # 工具契约（contracts）
 
-本文件定义 obsidian-mcp 0.3 的四个只读 MCP 工具。知识库文档只提供文档证据；Responsibility / Work 等运行状态必须从其权威运行时 owner 获取，不能从 Markdown 推断。
+obsidian-mcp 0.3 提供四个只读 MCP 工具。知识库文档只提供文档证据；Responsibility / Work 等运行状态必须从其权威运行时 owner 获取，不能从 Markdown 推断。
 
 ## 通用约定
 

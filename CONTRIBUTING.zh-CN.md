@@ -18,6 +18,11 @@
 - 使用小而聚焦的 commit；subject 使用简短祈使句（例如 “Add health check”）。
 - 不要提交 secret、`.env` 值或 PII；使用占位符。
 
+## 语言规则
+- 公开文档成对保留。英文 `README.md` 与 `README.zh-CN.md` 成对；`docs/` 下文档以中文为主文件，并与 `<name>.en.md` 成对。`LICENSE`、第三方内容与生成内容不适用。
+- 第一方代码的整行注释使用中文；行内注释、docstring 与 API 文档保持原有语言。
+- 开 PR 前运行 `python scripts/check_doc_pairs.py`；CI 会执行同一检查。
+
 ## 本地验证
 如果存在 `.github/scripts/validate_structure.py`，请在本地运行。
 

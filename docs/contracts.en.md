@@ -1,6 +1,6 @@
 # Tool contracts
 
-This document defines the four read-only MCP tools in obsidian-mcp 0.3. Vault documents provide only document evidence; runtime state such as Responsibility / Work must come from its authoritative runtime owner and must not be inferred from Markdown.
+obsidian-mcp 0.3 exposes four read-only MCP tools. Vault documents provide only document evidence; runtime state such as Responsibility / Work must come from its authoritative runtime owner and must not be inferred from Markdown.
 
 ## Common conventions
 
