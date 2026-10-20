@@ -18,11 +18,11 @@ All list interfaces have a result cap; paths are confined to the knowledge base 
 
 ## Documentation
 
-- [Project boundaries](docs/boundaries.md): responsibilities, read-only boundary, path allowlist, and prohibited reads.
-- [Tool contract](docs/contracts.md): inputs/outputs, error semantics, and length limits of the four tools.
-- [Lightweight index vs RAG](docs/rag-vs-index.md): the tradeoff decision (RAG is not implemented).
-- [Install / upgrade / uninstall / troubleshooting](docs/operations.md).
-- Architecture choice: [ADR-0001](docs/decisions/0001-local-read-only-stdio.md).
+- [Project boundaries](docs/boundaries.en.md): responsibilities, read-only boundary, path allowlist, and prohibited reads.
+- [Tool contract](docs/contracts.en.md): inputs/outputs, error semantics, and length limits of the four tools.
+- [Lightweight index vs RAG](docs/rag-vs-index.en.md): the tradeoff decision (RAG is not implemented).
+- [Install / upgrade / uninstall / troubleshooting](docs/operations.en.md).
+- Architecture choice: [ADR-0001](docs/decisions/0001-local-read-only-stdio.en.md).
 
 ## Quick start
 
@@ -52,7 +52,7 @@ The test suite also includes two kinds of real-subprocess tests (run automatical
 
 The `tools/list` schema snapshot lives in `tests/schema-snapshot.json`; when the schema changes, `test_schema_snapshot.py` fails and you must regenerate and commit it with `uv run python scripts/update_schema_snapshot.py` after manual confirmation.
 
-> When a resident MCP session exists on this machine, `uv sync` can fail because `obsidian-mcp.exe` is locked (see `docs/operations.md`); for local verification use `uv run --no-sync ...`, and CI is unaffected on a fresh runner.
+> When a resident MCP session exists on this machine, `uv sync` can fail because `obsidian-mcp.exe` is locked (see `docs/operations.en.md`); for local verification use `uv run --no-sync ...`, and CI is unaffected on a fresh runner.
 
 ## Codex integration
 
@@ -79,5 +79,5 @@ After changing the MCP config, restart the Codex client or extension. The projec
 - `operational-snapshot` in documents is only for navigation and drift clues; "is it currently running" must be answered with `query_runtime_status`.
 - The MCP persists no retrieved content, runtime results, or log data; nothing new is retained after the process exits.
 
-Architecture choices: see [ADR-0001](docs/decisions/0001-local-read-only-stdio.md).
+Architecture choices: see [ADR-0001](docs/decisions/0001-local-read-only-stdio.en.md).
 
