@@ -14,7 +14,7 @@ obsidian-mcp = "obsidian_mcp.server:main"
 
 [dependency-groups]
 dev = [
-    "hypothesis>=6.168.3,<7",
+    "hypothesis>=6.170.11,<7",
     "pytest>=9,<10",
     "pytest-cov>=7.1.0,<8",
     "ruff>=0.17.2,<1",
