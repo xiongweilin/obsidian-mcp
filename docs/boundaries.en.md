@@ -46,7 +46,6 @@ The following content is **never read** (no access beyond an existence check, an
 | `~/.codex/` | Codex configuration and credentials (including keys in `config.toml`) |
 | `.env` in compose/infrastructure directories | Environment variables and secrets |
 | Windows Credential Manager | System credentials |
-| `网络代理备份/` in the vault | v2rayN configuration and database backups, including proxy-server credentials |
 | `.sync_*.db*` in the vault | Obsidian sync databases |
 | `Desktop.ini`, `个人平台.png`, `scripts/*.ps1`, and other non-Markdown files in the vault | Unrelated to retrieval |
 | Any path outside `D:\agent\obsidian\` | Out of bounds |
