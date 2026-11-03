@@ -46,7 +46,6 @@
 | `~/.codex/` | Codex 配置与凭据（含 `config.toml` 中的密钥） |
 | compose/基础设施目录中的 `.env` | 环境变量与密钥 |
 | Windows 凭据管理器（Credential Manager） | 系统凭据 |
-| vault 内 `网络代理备份/` | v2rayN 配置与数据库备份，含代理服务器凭据 |
 | vault 内 `.sync_*.db*` | Obsidian 同步数据库 |
 | vault 内 `Desktop.ini`、`个人平台.png`、`scripts/*.ps1` 等非 Markdown 文件 | 与检索无关 |
 | `D:\agent\obsidian\` 之外的任何路径 | 越界 |
