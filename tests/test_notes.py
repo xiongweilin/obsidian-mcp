@@ -16,6 +16,13 @@ def test_search_returns_heading_chunk(vault: Path) -> None:
     assert result.items[0].source_kind == "documentation"
 
 
+def test_search_reports_unavailable_vault(tmp_path: Path) -> None:
+    repository = NoteRepository(tmp_path / "missing-vault")
+
+    with pytest.raises(ValueError, match="vault root is unavailable"):
+        repository.search("网络")
+
+
 def test_find_runbook_uses_router_link(vault: Path) -> None:
     result = NoteRepository(vault).find_runbooks("公网", limit=5)
 

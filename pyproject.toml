@@ -42,6 +42,8 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.coverage.run]
 branch = true
+relative_files = true
+source = ["src"]
 
 [tool.coverage.report]
 # 棘轮：当前 CI 子集覆盖率为 81.83%（分支）。只能提高，不能降低。
