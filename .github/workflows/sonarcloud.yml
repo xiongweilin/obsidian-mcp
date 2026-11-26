@@ -20,6 +20,15 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          enable-cache: true
+      - name: Sync locked dependencies
+        run: uv sync --locked
+      - name: Generate Python coverage report
+        run: >-
+          uv run pytest -q -m "not windows_only and not contract"
+          --cov --cov-branch --cov-report=xml:coverage.xml
       - name: Analyze with SonarQube Cloud
         uses: SonarSource/sonarqube-scan-action@d209202bc7d53ff1cc128f7f907dac145c9d6ae9 # v8
         env:
